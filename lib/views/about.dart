@@ -95,6 +95,12 @@ class AboutView extends ConsumerWidget {
                 label: 'github.com/$repository',
               ),
               _buildLinkItem(
+                glyph: AppGlyphs.code,
+                title: '本分支源码（GPL-3.0 修改版）',
+                url: 'https://github.com/v2pbj/xboard-client',
+                label: 'github.com/v2pbj/xboard-client',
+              ),
+              _buildLinkItem(
                 glyph: AppGlyphs.cpu,
                 title: appLocalizations.core,
                 url: 'https://github.com/chen08209/Clash.Meta/tree/FlClash',

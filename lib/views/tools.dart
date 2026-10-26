@@ -6,6 +6,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/about.dart';
 import 'package:fl_clash/views/access.dart';
+import 'package:fl_clash/views/account.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/config/general.dart';
 import 'package:fl_clash/views/hotkey.dart';
@@ -52,6 +53,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     return generateSection(
       title: appLocalizations.settings,
       items: [
+        const _AccountItem(),
         const _LocaleItem(),
         const _ThemeItem(),
         const _BackupItem(),
@@ -146,6 +148,19 @@ class _ThemeItem extends StatelessWidget {
       leading: const GlyphIcon(AppGlyphs.paintbrush),
       title: Text(context.appLocalizations.theme),
       widget: const ThemeView(),
+    );
+  }
+}
+
+class _AccountItem extends StatelessWidget {
+  const _AccountItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const GlyphIcon(AppGlyphs.cloudSync),
+      title: const Text('账号'),
+      widget: const AccountView(),
     );
   }
 }

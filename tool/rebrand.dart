@@ -154,7 +154,7 @@ List<_FilePlan> _buildPlan(_Options options) {
       ),
     ]),
     _FilePlan('distribute_options.yaml', [
-      _Edit("app_name: 'FlClash'", "app_name: '${options.name}'"),
+      _Edit(RegExp(r"app_name: '[^']*'"), "app_name: '${options.bin}'"),
     ]),
     _FilePlan('windows/CMakeLists.txt', [
       _Edit('project(FlClash', 'project(${options.bin}'),

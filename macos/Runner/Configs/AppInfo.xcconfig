@@ -11,4 +11,4 @@ PRODUCT_NAME = Xboard 客户端
 PRODUCT_BUNDLE_IDENTIFIER = com.xboard.client
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 com.follow. All rights reserved.
+PRODUCT_COPYRIGHT = xboard

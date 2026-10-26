@@ -203,8 +203,10 @@ List<_FilePlan> _buildPlan(_Options options) {
         'PRODUCT_BUNDLE_IDENTIFIER = com.follow.clash',
         'PRODUCT_BUNDLE_IDENTIFIER = ${options.id}',
       ),
-      _Edit(
-        'PRODUCT_COPYRIGHT = Copyright (C) 2025 com.follow',
+            _Edit(
+        RegExp(r'PRODUCT_COPYRIGHT = [^\n]*'),
+        'PRODUCT_COPYRIGHT = ${options.company}',
+      ), 2025 com.follow',
         'PRODUCT_COPYRIGHT = ${options.company}',
       ),
     ]),

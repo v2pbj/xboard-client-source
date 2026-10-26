@@ -5,11 +5,11 @@ void main() {
   group('ProtocolRegistrationPlan', () {
     test('builds registry writes for URL protocol registration', () {
       const plan = ProtocolRegistrationPlan(
-        scheme: 'flclash',
+        scheme: 'xboard',
         executable: r'C:\Program Files\FlClash\FlClash.exe',
       );
 
-      expect(plan.protocolKey, r'Software\Classes\flclash');
+      expect(plan.protocolKey, r'Software\Classes\xboard');
       expect(plan.commandKey, r'shell\open\command');
       expect(plan.protocolValueName, 'URL Protocol');
       expect(plan.protocolValue, '');
@@ -27,7 +27,7 @@ void main() {
     test('writes a hidden desktop entry claiming every scheme', () {
       expect(
         plan.desktopPath,
-        '/home/me/.local/share/applications/flclash-url-handler.desktop',
+        '/home/me/.local/share/applications/xboard-url-handler.desktop',
       );
       expect(
         plan.desktopEntry,
@@ -37,23 +37,23 @@ void main() {
         'NoDisplay=true\n'
         'Exec="/home/me/Apps/FlClash.AppImage" %u\n'
         'MimeType=x-scheme-handler/clash;x-scheme-handler/clashmeta;'
-        'x-scheme-handler/flclash;\n',
+        'x-scheme-handler/xboard;\n',
       );
     });
 
     test('makes the entry the default handler for every scheme', () {
       expect(plan.xdgMimeArguments, [
         'default',
-        'flclash-url-handler.desktop',
+        'xboard-url-handler.desktop',
         'x-scheme-handler/clash',
         'x-scheme-handler/clashmeta',
-        'x-scheme-handler/flclash',
+        'x-scheme-handler/xboard',
       ]);
     });
 
     test('escapes reserved characters in the executable path', () {
       const plan = LinuxProtocolRegistrationPlan(
-        schemes: ['flclash'],
+        schemes: ['xboard'],
         executable: r'/opt/my "apps"/$HOME/100%/Fl`Clash\bin',
         applicationsDir: '/tmp',
       );

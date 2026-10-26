@@ -126,7 +126,7 @@ class _AccountViewState extends ConsumerState<AccountView> {
             title: const Text('已用 / 总量'),
             subtitle: Text(
               '${_formatBytes(account.used)} / '
-              '${_formatBytes(account.transferEnable)}',
+              '${account.transferEnable <= 0 ? '不限' : _formatBytes(account.transferEnable)}',
             ),
           ),
         ],

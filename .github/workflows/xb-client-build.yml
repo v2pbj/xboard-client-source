@@ -58,7 +58,9 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: core/Clash.Meta/go.sum
+          cache-dependency-path: |
+            core/go.sum
+            plugins/setup/setup_hooks/lib/src/go_builder.dart
 
       - uses: actions/setup-java@v5
         with:
@@ -69,6 +71,8 @@ jobs:
         id: build-ndk
         with:
           ndk-version: ${{ env.NDK_VERSION }}
+          add-to-path: true
+          link-to-sdk: true
 
       - uses: gradle/actions/setup-gradle@v6
 
@@ -123,7 +127,9 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: core/Clash.Meta/go.sum
+          cache-dependency-path: |
+            core/go.sum
+            plugins/setup/setup_hooks/lib/src/go_builder.dart
 
       - uses: dtolnay/rust-toolchain@stable
         with:

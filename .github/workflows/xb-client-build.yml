@@ -5,13 +5,11 @@ name: Client build
 # KEY_PASSWORD as repository secrets; without them the APK is debug signed and
 # carries the .dev application id suffix, so it can be tested but not shipped.
 #
-# Both platforms build on every trigger: the workflow stays registered whatever
-# event started it, and the runs are short enough not to be worth filtering.
-#
-# The Android job frees runner disk before building. The NDK, the Flutter and
-# Gradle caches and the Go core together overflow the default runner volume,
-# which surfaces as "No space left on device" while the runner writes its own
-# log rather than as a compiler error.
+# Two runner quirks are handled here. Android frees disk first, because the NDK,
+# the Flutter and Gradle caches and the Go core together overflow the volume and
+# the failure then surfaces as an IO error from the runner itself. Both jobs put
+# the pub cache bin on PATH, because setup.dart installs flutter_distributor as
+# a global executable and then calls it by name.
 
 on:
   workflow_dispatch:
@@ -102,18 +100,37 @@ jobs:
           curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/$CA_BUNDLE"
           echo "$CA_BUNDLE_SHA256  $bundle" | sha256sum -c -
 
-      - name: Build
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Add pub cache bin to PATH
+        run: |
+          cache="${PUB_CACHE:-$HOME/.pub-cache}"
+          echo "pub cache: $cache"
+          echo "$cache/bin" >> "$GITHUB_PATH"
+
+      # The packaging step runs for several minutes and its failure has to be
+      # readable from the public API, so the tail of the output is echoed as
+      # annotations instead of being left inside the job log.
+      - name: Package
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
         run: |
-          flutter pub get
-          dart setup.dart android -v
+          set -o pipefail
+          dart setup.dart android -v 2>&1 | tee package.log
+          code=$?
+          if [ "$code" -ne 0 ]; then
+            tail -c 4000 package.log | sed 's/%/%25/g; s/\r$//' |
+              while IFS= read -r line; do echo "::error::$line"; done
+          fi
           df -h /
+          exit "$code"
 
       - uses: actions/upload-artifact@v4
         with:
           name: client-android
           path: ./dist
+          overwrite: true
           if-no-files-found: error
 
   windows:
@@ -151,13 +168,30 @@ jobs:
           curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/$CA_BUNDLE"
           echo "$CA_BUNDLE_SHA256  $bundle" | sha256sum -c -
 
-      - name: Build
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Add pub cache bin to PATH
+        shell: pwsh
         run: |
-          flutter pub get
-          dart setup.dart windows -v
+          $cache = if ($env:PUB_CACHE) { $env:PUB_CACHE } else { Join-Path $env:LOCALAPPDATA 'Pub\Cache' }
+          Write-Output "pub cache: $cache"
+          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $cache 'bin')
+
+      - name: Package
+        shell: pwsh
+        run: |
+          dart setup.dart windows -v 2>&1 | Tee-Object -FilePath package.log
+          if ($LASTEXITCODE -ne 0) {
+            Get-Content package.log -Tail 25 | ForEach-Object {
+              Write-Output ("::error::" + ($_ -replace '%', '%25'))
+            }
+            exit $LASTEXITCODE
+          }
 
       - uses: actions/upload-artifact@v4
         with:
           name: client-windows
           path: ./dist
+          overwrite: true
           if-no-files-found: error

@@ -5,11 +5,17 @@ name: Client build
 # KEY_PASSWORD as repository secrets; without them the APK is debug signed and
 # carries the .dev application id suffix, so it can be tested but not shipped.
 #
-# Two runner quirks are handled here. Android frees disk first, because the NDK,
-# the Flutter and Gradle caches and the Go core together overflow the volume and
-# the failure then surfaces as an IO error from the runner itself. Both jobs put
-# the pub cache bin on PATH, because setup.dart installs flutter_distributor as
-# a global executable and then calls it by name.
+# Runner quirks handled here, each one learned from a failed run:
+#   * Android frees disk first, because the NDK, the Flutter and Gradle caches
+#     and the Go core together overflow the volume, and that failure surfaces as
+#     an IO error from the runner itself rather than as a build error.
+#   * Both jobs put the pub cache bin on PATH: setup.dart activates
+#     flutter_distributor as a global executable and then calls it by name.
+#   * The Windows exe target runs Inno Setup's ISCC.exe through a shell that
+#     does not quote the path, so INNO_SETUP_PATH points at a junction without
+#     spaces instead of the default installation directory.
+#   * Both Package steps disable errexit and echo the tail of their output as
+#     annotations, so a failure stays readable without the job log.
 
 on:
   workflow_dispatch:
@@ -109,18 +115,15 @@ jobs:
           echo "pub cache: $cache"
           echo "$cache/bin" >> "$GITHUB_PATH"
 
-      # The packaging step runs for several minutes and its failure has to be
-      # readable from the public API, so the tail of the output is echoed as
-      # annotations instead of being left inside the job log.
       - name: Package
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
         run: |
-          set -o pipefail
+          set +e
           dart setup.dart android -v 2>&1 | tee package.log
-          code=$?
+          code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then
-            tail -c 4000 package.log | sed 's/%/%25/g; s/\r$//' |
+            tail -c 5000 package.log | sed 's/%/%25/g; s/\r$//' |
               while IFS= read -r line; do echo "::error::$line"; done
           fi
           df -h /
@@ -160,6 +163,23 @@ jobs:
 
       - name: Enable git long paths
         run: git config --global core.longpaths true
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          $default = 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $default)) {
+            choco install innosetup --no-progress -y
+          }
+          $source = 'C:\Program Files (x86)\Inno Setup 6'
+          if (-not (Test-Path (Join-Path $source 'ISCC.exe'))) {
+            $source = (Get-ChildItem 'C:\Program Files (x86)' -Filter 'Inno Setup*' -Directory |
+              Sort-Object Name -Descending | Select-Object -First 1).FullName
+          }
+          if (Test-Path 'C:\innosetup') { Remove-Item 'C:\innosetup' -Force -Recurse }
+          New-Item -ItemType Junction -Path 'C:\innosetup' -Target $source | Out-Null
+          "INNO_SETUP_PATH=C:\innosetup" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          & 'C:\innosetup\ISCC.exe' /? | Select-Object -First 3
 
       - name: Fetch CA certificates
         shell: bash

@@ -82,12 +82,18 @@ final panelAccountProvider =
     );
 
 class PanelAccountNotifier extends Notifier<PanelAccountState> {
-  final Dio _dio = Dio(
-    BaseOptions(
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 20),
-    ),
-  );
+  /// A test supplies its own client; the app gets the timeouts the panel needs.
+  PanelAccountNotifier({Dio? dio})
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              connectTimeout: const Duration(seconds: 15),
+              receiveTimeout: const Duration(seconds: 20),
+            ),
+          );
+
+  final Dio _dio;
 
   @override
   PanelAccountState build() {

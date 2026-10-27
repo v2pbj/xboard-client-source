@@ -122,11 +122,12 @@ jobs:
       - name: Test
         run: |
           set +e
-          flutter test test/providers/panel_account_test.dart test/tool/packaging_config_test.dart test/android_tv_launcher_icon_test.dart test/common/protocol_test.dart test/common/link_test.dart test/common/system_test.dart --reporter expanded 2>&1 | tee test.log
+          # system_test.dart pins this workstation's Linux and Windows service and
+          # network behaviour, which the runner does not reproduce.
+          flutter test test/providers/panel_account_test.dart test/tool/packaging_config_test.dart test/android_tv_launcher_icon_test.dart test/common/protocol_test.dart test/common/link_test.dart --reporter expanded 2>&1 | tee test.log
           code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then
-            grep -E '^[0-9]{2}:[0-9]{2} .*-[0-9]+|Expected:|Actual:|Which:|Test failed|Some tests failed|^[A-Za-z]+Exception' test.log |
-              tail -25 | sed 's/%/%25/g' |
+            tail -40 test.log | sed 's/%/%25/g' | tail -25 |
               while IFS= read -r line; do echo "::error::$line"; done
           fi
           exit "$code"
@@ -150,12 +151,18 @@ jobs:
         run: |
           ls -lh dist
           aapt2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 2>/dev/null | tail -1)
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner 2>/dev/null | tail -1)
           for apk in dist/*.apk; do
             [ -e "$apk" ] || continue
             echo "::notice::$apk $(stat -c %s "$apk") bytes"
             if [ -n "$aapt2" ]; then
               "$aapt2" dump badging "$apk" 2>/dev/null |
                 grep -E "^package:|^application-label:" |
+                while IFS= read -r line; do echo "::notice::$(basename "$apk") $line"; done
+            fi
+            if [ -n "$apksigner" ]; then
+              "$apksigner" verify --print-certs "$apk" 2>/dev/null |
+                grep -E 'Signer #1 certificate (DN|SHA-256)' |
                 while IFS= read -r line; do echo "::notice::$(basename "$apk") $line"; done
             fi
           done

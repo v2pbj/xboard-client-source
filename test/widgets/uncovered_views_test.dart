@@ -252,7 +252,8 @@ void main() {
     await tester.pump();
 
     expect(find.byType(AboutView), findsOneWidget);
-    expect(find.text('Telegram'), findsOneWidget);
+    expect(find.text('github.com/v2pbj/xboard-client-source'), findsOneWidget);
+    expect(find.text('Telegram'), findsNothing);
     final hero = find.byWidgetPredicate(
       (widget) => widget.runtimeType.toString() == '_AboutHero',
     );

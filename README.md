@@ -61,3 +61,5 @@
 ## 联系方式
 
 需要源码、构建帮助或发现本仓库缺少某个已发布版本，请开 **Issue**。
+
+| `v0.9.2-t5` | `bdf29229` | `c5062921` | Windows 窗口标题改为「白熊加速」；安装器命名与 `BearBooster.exe` 对齐、`publisher_url` 指向本仓库；CI 测试清单加入 `test/setup_test.dart`（并修掉它暴露的环境变量冲突） |

@@ -11,16 +11,19 @@
 
 | 版本 | 标签 | 应用源码 commit | 内核源码 commit | 构建依赖 |
 | --- | --- | --- | --- | --- |
+| 0.9.2（T3：移除上游 Telegram 入口、关闭应用内对上游更新的宣传） | `v0.9.2-t3` | `2f853500a4e8290ed7b93180ce394dc66db5bce1` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T2：修正「关于」页源码链接） | `v0.9.2-t2` | `9ef280a969a0cac04f55c1cc7d30edfb31edaee6` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T1：一键接入） | `v0.9.2-t1` | `cc73f1b9cc06143f44b9f8294a78b43aa5b348cf` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
 
-每个版本的**全部**安装包（T2 为 3 个 APK + 安装程序 + 便携包）都由上表该版本的
+每个版本的**全部**安装包（T2、T3 为 3 个 APK + 安装程序 + 便携包）都由上表该版本的
 应用源码 commit **同一个提交**构建，附件与源码严格一一对应。
 
 ## 源码快照文件（在各版本的 Release 附件里）
 
 | 版本 | 文件 | 大小 | SHA-256 |
 | --- | --- | --- | --- |
+| T3 | `bearbooster-0.9.2-t3-source.zip` | 22.2 MB | `7E40133096251380F32E83BF93D5FF12B2CD38E5AC5A8E35F0FCCE07F0BF7B1B` |
+| T3 | `bearbooster-0.9.2-t3-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T2 | `bearbooster-0.9.2-t2-source.zip` | 22.3 MB | `6A2AD86904AA002549D6CF9FF6FC4D0138B9B8B6DB8EC8D22119FF9DED498ED8` |
 | T2 | `bearbooster-0.9.2-t2-core-source.zip` | 1.7 MB | `DA853A53BE64DF95715B158B00816E17AB9C138CCB1B1799AAAF72109B6C7666` |
 | T1 | `bearbooster-0.9.2-t1-source.zip` | 22.3 MB | `3294E706AF28DD9BDE3C195C6609BC3DFB70A2B3EED46CE9BB78E362F91732F1` |

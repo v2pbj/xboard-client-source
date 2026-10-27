@@ -130,11 +130,8 @@ jobs:
           fi
           exit "$code"
 
-      - name: Test the whole suite (report only)
-        run: |
-          flutter test --reporter compact 2>&1 | tail -40 | tee suite.log
-          grep -E 'All tests passed|Some tests failed' suite.log | tail -2 |
-            while IFS= read -r line; do echo "::notice::$line"; done
+      # The whole suite and the coverage floors stay with build.yaml, which gates
+      # every push on them; this workflow only packages.
 
       - name: Package
         env:
@@ -165,9 +162,11 @@ jobs:
                 while IFS= read -r line; do echo "::notice::$(basename "$apk") $line"; done
             fi
             if [ -n "$apksigner" ]; then
-              "$apksigner" verify --print-certs "$apk" 2>/dev/null |
-                grep -E 'Signer #1 certificate (DN|SHA-256)' |
+              "$apksigner" verify --print-certs "$apk" 2>&1 |
+                grep -E 'Signer #1|Verified using' |
                 while IFS= read -r line; do echo "::notice::$(basename "$apk") $line"; done
+            else
+              echo "::warning::no apksigner under $ANDROID_HOME/build-tools"
             fi
           done
 

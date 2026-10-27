@@ -122,15 +122,19 @@ jobs:
       - name: Test
         run: |
           set +e
-          # system_test.dart pins this workstation's Linux and Windows service and
-          # network behaviour, which the runner does not reproduce.
-          flutter test test/providers/panel_account_test.dart test/tool/packaging_config_test.dart test/android_tv_launcher_icon_test.dart test/common/protocol_test.dart test/common/link_test.dart --reporter expanded 2>&1 | tee test.log
+          flutter test test/providers/panel_account_test.dart test/tool/packaging_config_test.dart test/android_tv_launcher_icon_test.dart test/common/protocol_test.dart test/common/link_test.dart test/common/system_test.dart --reporter expanded 2>&1 | tee test.log
           code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then
-            tail -40 test.log | sed 's/%/%25/g' | tail -25 |
+            tail -45 test.log | sed 's/%/%25/g' |
               while IFS= read -r line; do echo "::error::$line"; done
           fi
           exit "$code"
+
+      - name: Test the whole suite (report only)
+        run: |
+          flutter test --reporter compact 2>&1 | tail -40 | tee suite.log
+          grep -E 'All tests passed|Some tests failed' suite.log | tail -2 |
+            while IFS= read -r line; do echo "::notice::$line"; done
 
       - name: Package
         env:

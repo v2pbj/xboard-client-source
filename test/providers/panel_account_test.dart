@@ -115,7 +115,7 @@ void main() {
   group('login', () {
     test('normalises the address, trims the email, then loads usage', () async {
       final adapter = _ScriptedAdapter((options) {
-        if (options.path == _loginPath) {
+        if (options.uri.path == _loginPath) {
           return _json({
             'data': {'auth_data': 'tok-1'},
           });
@@ -156,7 +156,7 @@ void main() {
 
     test('accepts a token the panel returns at the top level', () async {
       final adapter = _ScriptedAdapter(
-        (options) => options.path == _loginPath
+        (options) => options.uri.path == _loginPath
             ? _json({'token': 'tok-2'})
             : _json(_subscribe()),
       );
@@ -241,7 +241,7 @@ void main() {
 
     test('reads the plan, the cap and both counters', () async {
       final adapter = _ScriptedAdapter(
-        (options) => options.path == _loginPath
+        (options) => options.uri.path == _loginPath
             ? _json({
                 'data': {'auth_data': 'tok-1'},
               })
@@ -261,7 +261,7 @@ void main() {
 
     test('keeps a zero cap, which is how the panel says unlimited', () async {
       final adapter = _ScriptedAdapter(
-        (options) => options.path == _loginPath
+        (options) => options.uri.path == _loginPath
             ? _json({
                 'data': {'auth_data': 'tok-1'},
               })
@@ -274,7 +274,7 @@ void main() {
 
     test('reads a payload that is not wrapped in data', () async {
       final adapter = _ScriptedAdapter(
-        (options) => options.path == _loginPath
+        (options) => options.uri.path == _loginPath
             ? _json({
                 'data': {'auth_data': 'tok-1'},
               })
@@ -369,7 +369,7 @@ void main() {
 
     test('logout forgets the session and what it remembered', () async {
       final adapter = _ScriptedAdapter(
-        (options) => options.path == _loginPath
+        (options) => options.uri.path == _loginPath
             ? _json({
                 'data': {'auth_data': 'tok-1'},
               })

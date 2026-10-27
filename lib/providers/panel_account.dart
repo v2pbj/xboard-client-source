@@ -140,6 +140,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
       final data = _dataOf(response.data);
       final token = '${data['auth_data'] ?? data['token'] ?? ''}';
       if (token.isEmpty) {
+        state = state.copyWith(isLoading: false);
         throw const MessageException('登录失败：面板没有返回令牌');
       }
       state = state.copyWith(

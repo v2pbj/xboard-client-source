@@ -77,23 +77,20 @@ jobs:
           sudo rm -rf \
             /usr/share/dotnet \
             /opt/ghc \
+            /opt/hostedtoolcache/CodeQL \
             /usr/local/share/boost \
+            /usr/local/.ghcup \
+            /usr/share/swift \
             /usr/local/lib/android/sdk/emulator \
             /usr/local/lib/android/sdk/system-images \
             /usr/local/lib/android/sdk/ndk
           sudo apt-get clean
-          df -h /
-          # Gradle merging every locale's resources is the memory peak of this
-          # job, and a kernel OOM kill ends the step with no error in the log.
+          # The Android build fills this 72 GB volume: 24 GB in twenty minutes,
+          # ending in a 100% full disk and a step that stops with no error at
+          # all in the log. These deletions are what keep it off that ceiling.
           nproc
           free -m
-          if [ "$(free -m | awk '/^Swap:/ {print $2}')" -lt 2048 ]; then
-            sudo fallocate -l 4G /mnt/swapfile || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=4096
-            sudo chmod 600 /mnt/swapfile
-            sudo mkswap /mnt/swapfile
-            sudo swapon /mnt/swapfile
-            free -m
-          fi
+          df -h /
 
       - uses: actions/setup-go@v6
         with:

@@ -134,6 +134,20 @@ jobs:
           df -h /
           exit "$code"
 
+      - name: Report what was packaged
+        run: |
+          ls -lh dist
+          aapt2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 2>/dev/null | tail -1)
+          for apk in dist/*.apk; do
+            [ -e "$apk" ] || continue
+            echo "::notice::$apk $(stat -c %s "$apk") bytes"
+            if [ -n "$aapt2" ]; then
+              "$aapt2" dump badging "$apk" 2>/dev/null |
+                grep -E "^package:|^application-label:" |
+                while IFS= read -r line; do echo "::notice::$(basename "$apk") $line"; done
+            fi
+          done
+
       - uses: actions/upload-artifact@v4
         with:
           name: client-android
@@ -212,6 +226,14 @@ jobs:
               Write-Output ("::error::" + ($_ -replace '%', '%25'))
             }
             exit $LASTEXITCODE
+          }
+
+      - name: Report what was packaged
+        shell: pwsh
+        run: |
+          Get-ChildItem dist -Recurse -File | ForEach-Object {
+            $relative = $_.FullName.Replace((Get-Location).Path + '\', '')
+            Write-Output ("::notice::{0}  {1:N1} MB" -f $relative, ($_.Length / 1MB))
           }
 
       - uses: actions/upload-artifact@v4

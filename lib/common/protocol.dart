@@ -4,7 +4,7 @@ import 'package:win32_registry/win32_registry.dart';
 
 import 'print.dart';
 
-const protocolSchemes = ['clash', 'clashmeta', 'xboard'];
+const protocolSchemes = ['clash', 'clashmeta', 'bearbooster'];
 
 class ProtocolRegistrationPlan {
   final String scheme;
@@ -40,7 +40,7 @@ class LinuxProtocolRegistrationPlan {
     required this.applicationsDir,
   });
 
-  String get desktopId => 'xboard-url-handler.desktop';
+  String get desktopId => 'bearbooster-url-handler.desktop';
 
   String get desktopPath => '$applicationsDir/$desktopId';
 
@@ -52,7 +52,7 @@ class LinuxProtocolRegistrationPlan {
   String get desktopEntry => [
     '[Desktop Entry]',
     'Type=Application',
-    'Name=Xboard 客户端',
+    'Name=Bear Booster',
     'NoDisplay=true',
     'Exec=$exec',
     'MimeType=${mimeTypes.join(';')};',

@@ -23,7 +23,7 @@ val hasReleaseSigning = releaseStoreFile.exists() &&
     releaseKeyPassword != null
 
 android {
-    namespace = "com.xboard.client"
+    namespace = "com.bearbooster.client"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 
@@ -33,7 +33,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.xboard.client"
+        applicationId = "com.bearbooster.client"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode

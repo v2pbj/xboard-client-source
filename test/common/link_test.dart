@@ -34,7 +34,7 @@ void main() {
   test('an install-config link reports its url', () async {
     await listen();
 
-    await emit('xboard://install-config?url=https://example.com/a.yaml');
+    await emit('bearbooster://install-config?url=https://example.com/a.yaml');
 
     expect(received, ['https://example.com/a.yaml']);
   });
@@ -42,7 +42,7 @@ void main() {
   test('an install-config link without a url is ignored', () async {
     await listen();
 
-    await emit('xboard://install-config');
+    await emit('bearbooster://install-config');
 
     expect(received, isEmpty);
   });
@@ -50,8 +50,8 @@ void main() {
   test('an install-config link with a blank url is ignored', () async {
     await listen();
 
-    await emit('xboard://install-config?url=');
-    await emit('xboard://install-config?url=%20');
+    await emit('bearbooster://install-config?url=');
+    await emit('bearbooster://install-config?url=%20');
 
     expect(received, isEmpty);
   });
@@ -59,7 +59,7 @@ void main() {
   test('a link for another host is ignored', () async {
     await listen();
 
-    await emit('xboard://open-profile?url=https://example.com/a.yaml');
+    await emit('bearbooster://open-profile?url=https://example.com/a.yaml');
 
     expect(received, isEmpty);
   });
@@ -72,7 +72,7 @@ void main() {
 
     expect(linkManager.subscription, isNot(same(first)));
 
-    await emit('xboard://install-config?url=https://example.com/a.yaml');
+    await emit('bearbooster://install-config?url=https://example.com/a.yaml');
 
     expect(received, ['https://example.com/a.yaml']);
   });
@@ -82,7 +82,7 @@ void main() {
     () async {
       linkManager.seedInitialLink([
         '--verbose',
-        'xboard://install-config?url=https://example.com/a.yaml',
+        'bearbooster://install-config?url=https://example.com/a.yaml',
       ]);
 
       expect(received, isEmpty);
@@ -110,7 +110,7 @@ void main() {
 
     linkManager.destroy();
     linkManager.destroy();
-    await emit('xboard://install-config?url=https://example.com/a.yaml');
+    await emit('bearbooster://install-config?url=https://example.com/a.yaml');
 
     expect(linkManager.subscription, isNull);
     expect(received, isEmpty);
@@ -125,7 +125,7 @@ void main() {
     });
 
     test('unwraps the url of an install-config link for every scheme', () {
-      for (final scheme in ['clash', 'clashmeta', 'xboard']) {
+      for (final scheme in ['clash', 'clashmeta', 'bearbooster']) {
         expect(
           profileUrlFromQrCodes([
             '$scheme://install-config?url=https%3A%2F%2Fexample.com%2Fa.yaml',
@@ -164,7 +164,7 @@ void main() {
       expect(
         profileUrlFromQrCodes([
           'plain text',
-          'xboard://install-config?url=https://example.com/first.yaml',
+          'bearbooster://install-config?url=https://example.com/first.yaml',
           'https://example.com/second.yaml',
         ]),
         'https://example.com/first.yaml',

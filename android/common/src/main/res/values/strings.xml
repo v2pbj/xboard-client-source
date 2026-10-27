@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Xboard 客户端</string>
-    <string name="service_channel_name">Xboard 客户端 Service</string>
+    <string name="app_name">Bear Booster</string>
+    <string name="service_channel_name">Bear Booster Service</string>
 </resources>

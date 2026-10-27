@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = Xboard 客户端
+PRODUCT_NAME = Bear Booster
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.xboard.client
+PRODUCT_BUNDLE_IDENTIFIER = com.bearbooster.client
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = xboard
+PRODUCT_COPYRIGHT = Bear Booster

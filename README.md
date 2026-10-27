@@ -11,17 +11,20 @@
 
 | 版本 | 标签 | 应用源码 commit | 内核源码 commit | 构建依赖 |
 | --- | --- | --- | --- | --- |
+| 0.9.2（T4：安装包内置面板地址） | `v0.9.2-t4` | `28023bbf44a5d270cb6586dbc1b9f4fb0f277e1c` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T3：移除上游 Telegram 入口、关闭应用内对上游更新的宣传） | `v0.9.2-t3` | `2f853500a4e8290ed7b93180ce394dc66db5bce1` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T2：修正「关于」页源码链接） | `v0.9.2-t2` | `9ef280a969a0cac04f55c1cc7d30edfb31edaee6` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T1：一键接入） | `v0.9.2-t1` | `cc73f1b9cc06143f44b9f8294a78b43aa5b348cf` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
 
-每个版本的**全部**安装包（T2、T3 为 3 个 APK + 安装程序 + 便携包）都由上表该版本的
+每个版本的**全部**安装包（T2 起为 3 个 APK + 安装程序 + 便携包）都由上表该版本的
 应用源码 commit **同一个提交**构建，附件与源码严格一一对应。
 
 ## 源码快照文件（在各版本的 Release 附件里）
 
 | 版本 | 文件 | 大小 | SHA-256 |
 | --- | --- | --- | --- |
+| T4 | `bearbooster-0.9.2-t4-source.zip` | 22.2 MB | `6927C94400DC783DDB0F3A09237FA2DD6D0F6200CB08BAE6443EFFA6A9969E67` |
+| T4 | `bearbooster-0.9.2-t4-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T3 | `bearbooster-0.9.2-t3-source.zip` | 22.2 MB | `7E40133096251380F32E83BF93D5FF12B2CD38E5AC5A8E35F0FCCE07F0BF7B1B` |
 | T3 | `bearbooster-0.9.2-t3-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T2 | `bearbooster-0.9.2-t2-source.zip` | 22.3 MB | `6A2AD86904AA002549D6CF9FF6FC4D0138B9B8B6DB8EC8D22119FF9DED498ED8` |
@@ -42,6 +45,8 @@
    - Android：`flutter build apk --release --dart-define=PANEL_BASE_URL=<你的面板地址>`；
    - Windows：`flutter build windows --release`。
    - Go 内核使用 `CGO_ENABLED=0` 构建；Android 需要 NDK r28c 与 JDK 17。
+   - 仓库自带的 `setup.dart` 走 `--dart-define-from-file=env.json`，它会把环境变量
+     `PANEL_BASE_URL`（若已设置）写进该文件；CI 用的就是这条路径。不设置时行为与以前完全一致。
 2. **签名**：发布版 APK 使用发布者私钥签名。**签名密钥不属于对应源码**，因此不在此仓库中
    （GPL-3.0 只要求提供构建所需源码，不要求提供私钥）。源码的 CI 定义里出现的
    `STORE_PASSWORD` / `KEY_PASSWORD` / `KEYSTORE` / `KEY_ALIAS` 只是 **GitHub Actions 的变量名**，

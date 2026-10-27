@@ -103,6 +103,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
 
   Future<void> _restore() async {
     final preferences = await SharedPreferences.getInstance();
+    if (!ref.mounted) return;
     final token = preferences.getString(_tokenKey) ?? '';
     final baseUrl = preferences.getString(_baseUrlKey) ?? _panelBaseUrlDefine;
     final email = preferences.getString(_emailKey) ?? '';
@@ -166,6 +167,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
         options: Options(headers: {'Authorization': state.token}),
       );
       final data = _dataOf(response.data);
+      if (!ref.mounted) return;
       state = state.copyWith(
         subscribeUrl: '${data['subscribe_url'] ?? ''}',
         planName: _planNameOf(data),
@@ -176,7 +178,9 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
         isLoading: false,
       );
     } on DioException catch (error) {
-      state = state.copyWith(isLoading: false);
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false);
+      }
       throw MessageException(_messageOf(error));
     }
   }

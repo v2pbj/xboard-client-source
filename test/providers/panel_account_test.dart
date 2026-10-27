@@ -72,6 +72,9 @@ void main() {
       ],
     );
     addTearDown(container.dispose);
+    // The account page listens, so a subscribed provider is what the app has;
+    // without a listener Riverpod disposes it before `_restore` can finish.
+    container.listen(panelAccountProvider, (_, _) {});
     return container;
   }
 

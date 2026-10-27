@@ -10,6 +10,9 @@ import 'package:fl_clash/models/models.dart';
 import 'package:material_ui/material_ui.dart';
 
 const appName = 'Bear Booster';
+
+/// Display names may carry spaces; a path, a device name and a user agent may not.
+const appSlug = 'BearBooster';
 const appHelperService = 'FlClashHelperService';
 const coreManifestName = 'manifest.json';
 const browserUa =

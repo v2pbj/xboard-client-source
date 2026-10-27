@@ -23,7 +23,9 @@ val hasReleaseSigning = releaseStoreFile.exists() &&
     releaseKeyPassword != null
 
 android {
-    namespace = "com.bearbooster.client"
+    // The namespace stays upstream so the Kotlin sources and their R import keep
+    // resolving; the application id below is what carries the brand.
+    namespace = "com.follow.clash"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 

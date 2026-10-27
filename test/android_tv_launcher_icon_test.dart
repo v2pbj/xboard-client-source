@@ -60,7 +60,7 @@ void main() {
     );
     expect(
       _androidAttribute(adaptiveIcon, 'background', 'drawable'),
-      '@color/ic_launcher_background',
+      '@drawable/ic_launcher_background',
     );
 
     final vector = File(

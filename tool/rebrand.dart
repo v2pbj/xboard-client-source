@@ -133,7 +133,10 @@ List<_FilePlan> _buildPlan(_Options options) {
       _Edit('>FlClash Service<', '>${options.name} Service<'),
     ]),
     _FilePlan('android/app/build.gradle.kts', [
-      _Edit('com.follow.clash', options.id),
+      _Edit(
+        RegExp(r'applicationId = "[^"]*"'),
+        'applicationId = "${options.id}"',
+      ),
     ]),
     _FilePlan('lib/common/constant.dart', [
       _Edit("const appName = 'FlClash';", "const appName = '${options.name}';"),
@@ -197,6 +200,13 @@ List<_FilePlan> _buildPlan(_Options options) {
         'set(APPLICATION_ID "${options.id}")',
       ),
     ]),
+    for (final format in ['appimage', 'deb', 'rpm'])
+      _FilePlan('linux/packaging/$format/make_config.yaml', [
+        _Edit(
+          'startup_wm_class: com.follow.clash',
+          'startup_wm_class: ${options.id}',
+        ),
+      ]),
     _FilePlan('macos/Runner/Configs/AppInfo.xcconfig', [
       _Edit('PRODUCT_NAME = FlClash', 'PRODUCT_NAME = ${options.name}'),
       _Edit(

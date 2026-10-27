@@ -11,22 +11,30 @@
 
 | 版本 | 标签 | 应用源码 commit | 内核源码 commit | 构建依赖 |
 | --- | --- | --- | --- | --- |
-| 0.9.2（T1 一键接入） | `v0.9.2-t1` | `cc73f1b9cc06143f44b9f8294a78b43aa5b348cf` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
+| 0.9.2（T2：修正「关于」页源码链接） | `v0.9.2-t2` | `9ef280a969a0cac04f55c1cc7d30edfb31edaee6` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
+| 0.9.2（T1：一键接入） | `v0.9.2-t1` | `cc73f1b9cc06143f44b9f8294a78b43aa5b348cf` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
+
+每个版本的**全部**安装包（T2 为 3 个 APK + 安装程序 + 便携包）都由上表该版本的
+应用源码 commit **同一个提交**构建，附件与源码严格一一对应。
 
 ## 源码快照文件（在各版本的 Release 附件里）
 
-| 文件 | 大小 | SHA-256 |
-| --- | --- | --- |
-| `bearbooster-0.9.2-t1-source.zip` | 22.3 MB | `3294E706AF28DD9BDE3C195C6609BC3DFB70A2B3EED46CE9BB78E362F91732F1` |
-| `bearbooster-0.9.2-t1-core-source.zip` | 1.7 MB | `DA853A53BE64DF95715B158B00816E17AB9C138CCB1B1799AAAF72109B6C7666` |
+| 版本 | 文件 | 大小 | SHA-256 |
+| --- | --- | --- | --- |
+| T2 | `bearbooster-0.9.2-t2-source.zip` | 22.3 MB | `6A2AD86904AA002549D6CF9FF6FC4D0138B9B8B6DB8EC8D22119FF9DED498ED8` |
+| T2 | `bearbooster-0.9.2-t2-core-source.zip` | 1.7 MB | `DA853A53BE64DF95715B158B00816E17AB9C138CCB1B1799AAAF72109B6C7666` |
+| T1 | `bearbooster-0.9.2-t1-source.zip` | 22.3 MB | `3294E706AF28DD9BDE3C195C6609BC3DFB70A2B3EED46CE9BB78E362F91732F1` |
+| T1 | `bearbooster-0.9.2-t1-core-source.zip` | 1.7 MB | `DA853A53BE64DF95715B158B00816E17AB9C138CCB1B1799AAAF72109B6C7666` |
 
-第一个是应用本体（Flutter/Dart + Android/Windows 工程，含全部构建脚本与 CI 定义）；
-第二个是内核子模块在该 commit 上的源码。两者合起来即为对应源码（Corresponding Source）。
+每个版本的 `-source.zip` 是应用本体（Flutter/Dart + Android/Windows 工程，含全部构建脚本与 CI 定义），
+`-core-source.zip` 是内核子模块在该 commit 上的源码。两者合起来即为对应源码（Corresponding Source）。
+
+安装包自身的 SHA-256 见同版本 Release 里的 `SHA256SUMS.txt`。
 
 ## 怎么构建（与 CI 一致）
 
 1. **应用**：解压 `bearbooster-*-source.zip`，在目录内
-   - `git submodule` 对应的内核源码用 `core-source.zip` 解到 `core/Clash.Meta/`；
+   - 把 `-core-source.zip` 解到 `core/Clash.Meta/`；
    - `flutter pub get`；
    - Android：`flutter build apk --release --dart-define=PANEL_BASE_URL=<你的面板地址>`；
    - Windows：`flutter build windows --release`。
@@ -45,4 +53,3 @@
 ## 联系方式
 
 需要源码、构建帮助或发现本仓库缺少某个已发布版本，请开 **Issue**。
-（已发布但尚未在此登记对应源码的版本，我们会补上。）

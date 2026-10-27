@@ -97,8 +97,8 @@ class AboutView extends ConsumerWidget {
               _buildLinkItem(
                 glyph: AppGlyphs.code,
                 title: '本分支源码（GPL-3.0 修改版）',
-                url: 'https://github.com/v2pbj/xboard-client',
-                label: 'github.com/v2pbj/xboard-client',
+                url: 'https://github.com/v2pbj/xboard-client-source',
+                label: 'github.com/v2pbj/xboard-client-source',
               ),
               _buildLinkItem(
                 glyph: AppGlyphs.cpu,

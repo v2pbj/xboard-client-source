@@ -37,6 +37,11 @@ on:
         required: false
         type: boolean
         default: false
+      skip_android:
+        description: Skip the Android job when only the Windows build is needed.
+        required: false
+        type: boolean
+        default: false
   push:
     branches:
       - main
@@ -59,6 +64,7 @@ env:
 
 jobs:
   android:
+    if: github.event_name != 'workflow_dispatch' || inputs.skip_android != true
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -168,6 +174,18 @@ jobs:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
         run: |
           set +e
+          # This build has twice died with nothing at all in the log, in the
+          # middle of resource merging, so sample the runner until the step
+          # ends: the job log is the only place that death shows up.
+          timeout 45m bash -c '
+            while true; do
+              echo "== probe $(date -u +%H:%M:%S) =="
+              free -m | head -3
+              df -h / | tail -1
+              ps -eo rss,comm --sort=-rss | head -6
+              sudo dmesg -T 2>/dev/null | grep -iE "out of memory|oom-kill|killed process" | tail -3
+              sleep 30
+            done' &
           dart setup.dart android -v 2>&1 | tee package.log
           code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then

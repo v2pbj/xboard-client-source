@@ -162,8 +162,8 @@ jobs:
                 while IFS= read -r line; do echo "::notice::$(basename "$apk") $line"; done
             fi
             if [ -n "$apksigner" ]; then
-              "$apksigner" verify --print-certs "$apk" 2>&1 |
-                grep -E 'Signer #1|Verified using' |
+              # Print it raw: filtering this once hid the very line it exists to show.
+              "$apksigner" verify --print-certs "$apk" 2>&1 | head -6 | sed 's/%/%25/g' |
                 while IFS= read -r line; do echo "::notice::$(basename "$apk") $line"; done
             else
               echo "::warning::no apksigner under $ANDROID_HOME/build-tools"

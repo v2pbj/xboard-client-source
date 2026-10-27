@@ -157,6 +157,11 @@ jobs:
           echo "$cache/bin" >> "$GITHUB_PATH"
 
       - name: Test
+        env:
+          # Cleared for this step: the ambient build-injection variable is not
+          # part of the environment the unit tests assert on, so CI has to match
+          # a developer machine here rather than add a key.
+          PANEL_BASE_URL: ''
         run: |
           set +e
           flutter test test/providers/panel_account_test.dart test/tool/packaging_config_test.dart test/setup_test.dart test/android_tv_launcher_icon_test.dart test/common/protocol_test.dart test/common/link_test.dart test/common/system_test.dart --reporter expanded 2>&1 | tee test.log

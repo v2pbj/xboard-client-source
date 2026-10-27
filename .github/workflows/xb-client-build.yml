@@ -61,6 +61,10 @@ env:
   NDK_VERSION: r28c
   CA_BUNDLE: cacert-2026-09-25.pem
   CA_BUNDLE_SHA256: a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505
+  # setup.dart writes this into env.json so the account page opens with the panel
+  # address already filled in. Without it the field starts empty and every user
+  # has to type the address once before the first login.
+  PANEL_BASE_URL: https://app-t.xycould.top
 
 jobs:
   android:

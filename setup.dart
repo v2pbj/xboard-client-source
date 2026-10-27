@@ -124,8 +124,12 @@ List<String> createFlutterBuildArgs({
   return flutterBuildArgs;
 }
 
-Map<String, String> createBuildEnvironment(String env) {
-  return {'APP_ENV': env};
+Map<String, String> createBuildEnvironment(String env, {String? panelBaseUrl}) {
+  final baseUrl = panelBaseUrl ?? Platform.environment['PANEL_BASE_URL'];
+  return {
+    'APP_ENV': env,
+    if (baseUrl != null && baseUrl.isNotEmpty) 'PANEL_BASE_URL': baseUrl,
+  };
 }
 
 /// Packages whose build hook `pubspec.yaml` turns into a no-op.

@@ -25,6 +25,19 @@ void main() {
       expect(setup.createBuildEnvironment('dev'), {'APP_ENV': 'dev'});
     });
 
+    test('carries a panel base url into the build environment', () {
+      expect(
+        setup.createBuildEnvironment('dev', panelBaseUrl: 'https://panel.test'),
+        {'APP_ENV': 'dev', 'PANEL_BASE_URL': 'https://panel.test'},
+      );
+    });
+
+    test('omits the panel base url when the build supplies none', () {
+      expect(setup.createBuildEnvironment('dev', panelBaseUrl: ''), {
+        'APP_ENV': 'dev',
+      });
+    });
+
     test('omits verbose from flutter build args by default', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',

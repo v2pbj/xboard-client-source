@@ -49,7 +49,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
-  if (!window.Create(L"FlClash", origin, size)) {
+  // Escaped rather than written literally: this file is compiled without /utf-8,
+  // so a literal title would depend on the compiler's source charset.
+  if (!window.Create(L"\u767d\u718a\u52a0\u901f", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

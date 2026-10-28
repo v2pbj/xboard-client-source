@@ -173,7 +173,6 @@ class Bootstrap {
       unawaited(window?.hide());
     }
     await _handleFailedPreference();
-    await _markDisclaimerSeen();
     await _showCrashRecoveryTip();
     await _container.read(coreActionProvider.notifier).startCore();
     if (!_bootDecision.isDegraded) {
@@ -227,23 +226,6 @@ class Bootstrap {
     }
     // Saving here would rewrite the preferences file the user just chose to delete.
     await _container.read(systemActionProvider.notifier).handleExit(false);
-  }
-
-  /// The notice does not block startup: it stays reachable from the tools page,
-  /// so the first launch only records the version the user has been shown.
-  Future<void> _markDisclaimerSeen() async {
-    final acceptedVersion = _container.read(
-      appSettingProvider.select((state) => state.acceptedDisclaimerVersion),
-    );
-    if (acceptedVersion >= disclaimerVersion) {
-      return;
-    }
-    _container
-        .read(appSettingProvider.notifier)
-        .update(
-          (state) =>
-              state.copyWith(acceptedDisclaimerVersion: disclaimerVersion),
-        );
   }
 }
 

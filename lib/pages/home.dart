@@ -70,6 +70,7 @@ class _HomeShell extends ConsumerWidget {
       color: SurfaceLevel.page.colorOf(context.colorScheme),
       child: Column(
         children: [
+          const DisclaimerNotice(),
           Expanded(
             child: Stack(
               children: [

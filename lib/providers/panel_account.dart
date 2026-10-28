@@ -213,12 +213,14 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
 }
 
 /// The panel reads the requested format from `flag`, and only falls back to the
-/// User-Agent, so a renamed client still gets the Clash template.
+/// User-Agent, so a renamed client still gets the Clash template. It has to be
+/// the Clash.Meta template: this panel serves VLESS nodes only, and the classic
+/// `clash` template drops every VLESS proxy, which leaves an empty node list.
 String _withClashFlag(String url) {
   final uri = Uri.tryParse(url);
   if (uri == null) return url;
   return uri
-      .replace(queryParameters: {...uri.queryParameters, 'flag': 'clash'})
+      .replace(queryParameters: {...uri.queryParameters, 'flag': 'clashmeta'})
       .toString();
 }
 

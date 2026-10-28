@@ -226,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "accessControlSelectedCount": m0,
     "account": MessageLookupByLibrary.simpleMessage("계정"),
+    "accountLogin": MessageLookupByLibrary.simpleMessage("패널 계정 로그인"),
     "action": MessageLookupByLibrary.simpleMessage("동작"),
     "actionDelayTest": MessageLookupByLibrary.simpleMessage("모든 지연 테스트"),
     "actionDirectMode": MessageLookupByLibrary.simpleMessage("직접 모드"),

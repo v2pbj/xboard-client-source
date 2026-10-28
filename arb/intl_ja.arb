@@ -136,6 +136,7 @@
   "databaseWriteFailedTip": "変更の保存に失敗したため、元に戻しました",
   "tip": "ヒント",
   "account": "アカウント",
+  "accountLogin": "パネルアカウントにログイン",
   "backup": "バックアップ",
   "backupSuccess": "バックアップが完了しました",
   "noInfo": "情報がありません",

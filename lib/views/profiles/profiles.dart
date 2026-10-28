@@ -6,6 +6,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
+import 'package:fl_clash/views/account.dart';
 import 'package:fl_clash/views/profiles/custom/custom.dart';
 import 'package:fl_clash/views/profiles/extend/extend.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -122,13 +123,20 @@ class _ProfilesViewState extends ConsumerState<ProfilesView> {
               label: appLocalizations.nullTip(appLocalizations.profiles),
               description: appLocalizations.nullProfileDesc,
               illustration: NullStatusIllustration.profile,
-              action: AddProfileMenu(
-                builder: (open) => TonalButton(
-                  size: TonalButtonSize.bar,
-                  glyph: AppGlyphs.addCircle,
-                  label: appLocalizations.addProfile,
-                  onPressed: open,
-                ),
+              action: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 12,
+                children: [
+                  AddProfileMenu(
+                    builder: (open) => TonalButton(
+                      size: TonalButtonSize.bar,
+                      glyph: AppGlyphs.addCircle,
+                      label: appLocalizations.addProfile,
+                      onPressed: open,
+                    ),
+                  ),
+                  const AccountLoginButton(),
+                ],
               ),
             ),
             child: _ProfilesGrid(

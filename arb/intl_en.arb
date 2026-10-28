@@ -136,6 +136,7 @@
   "databaseWriteFailedTip": "Failed to save the change; it has been rolled back",
   "tip": "Tip",
   "account": "Account",
+  "accountLogin": "Sign in to panel account",
   "backup": "Backup",
   "backupSuccess": "Backup successful",
   "noInfo": "No info",

@@ -222,6 +222,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "accessControlSelectedCount": m0,
     "account": MessageLookupByLibrary.simpleMessage("账号"),
+    "accountLogin": MessageLookupByLibrary.simpleMessage("登录面板账号"),
     "action": MessageLookupByLibrary.simpleMessage("操作"),
     "actionDelayTest": MessageLookupByLibrary.simpleMessage("测试全部延迟"),
     "actionDirectMode": MessageLookupByLibrary.simpleMessage("直连模式"),

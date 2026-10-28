@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/panel_account.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -153,6 +154,32 @@ class _AccountViewState extends ConsumerState<AccountView> {
             ? _buildAccount(account)
             : _buildLoginForm(),
       ),
+    );
+  }
+}
+
+/// Opens the panel account page; the page itself reads the account state.
+void openAccountView(BuildContext context) {
+  showExtend(
+    context,
+    props: const ExtendProps(forceFull: true),
+    builder: (_) => const AccountView(),
+  );
+}
+
+/// The panel sign-in an empty profile list offers, at [size].
+class AccountLoginButton extends StatelessWidget {
+  const AccountLoginButton({super.key, this.size = TonalButtonSize.bar});
+
+  final TonalButtonSize size;
+
+  @override
+  Widget build(BuildContext context) {
+    return TonalButton(
+      size: size,
+      glyph: AppGlyphs.cloudSync,
+      label: context.appLocalizations.accountLogin,
+      onPressed: () => openAccountView(context),
     );
   }
 }

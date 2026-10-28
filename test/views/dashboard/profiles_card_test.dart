@@ -5,6 +5,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/account.dart';
 import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/style.dart';
 import 'package:fl_clash/views/dashboard/widgets/profile_detail.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart' show Override;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../helpers/app_paths.dart';
 import '../../helpers/test_app.dart';
@@ -151,6 +153,21 @@ void main() {
     await pumpDesktopCard(tester);
     expect(find.text('Add profile'), findsOneWidget);
     expect(find.byTooltip('Switch profile'), findsNothing);
+  });
+
+  testWidgets('an empty card offers the panel sign-in', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    setUpProfiles([]);
+    await pumpDesktopCard(tester);
+    expect(find.byTooltip('Sign in to panel account'), findsOneWidget);
+
+    await pumpCard(tester);
+    expect(find.byType(AccountLoginButton), findsOneWidget);
+
+    await tester.tap(find.byType(AccountLoginButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AccountView), findsOneWidget);
   });
 
   testWidgets('shows the current profile, its usage and when it ends', (

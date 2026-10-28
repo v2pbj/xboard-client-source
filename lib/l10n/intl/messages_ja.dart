@@ -225,6 +225,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "accessControlSelectedCount": m0,
     "account": MessageLookupByLibrary.simpleMessage("アカウント"),
+    "accountLogin": MessageLookupByLibrary.simpleMessage("パネルアカウントにログイン"),
     "action": MessageLookupByLibrary.simpleMessage("アクション"),
     "actionDelayTest": MessageLookupByLibrary.simpleMessage("すべての遅延をテスト"),
     "actionDirectMode": MessageLookupByLibrary.simpleMessage("ダイレクトモード"),

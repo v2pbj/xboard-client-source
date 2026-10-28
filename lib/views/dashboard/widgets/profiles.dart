@@ -6,6 +6,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
+import 'package:fl_clash/views/account.dart';
 import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/style.dart';
 import 'package:fl_clash/views/profiles/custom/custom.dart';
@@ -129,6 +130,15 @@ class ProfilesCard extends ConsumerWidget {
               onPressed: () => showProfilesSheet(context),
             ),
           ),
+        if (profile == null && !mobile)
+          SizedBox(
+            height: name.leading,
+            child: DashboardIconButton(
+              glyph: AppGlyphs.cloudSync,
+              tooltip: appLocalizations.accountLogin,
+              onPressed: () => openAccountView(context),
+            ),
+          ),
       ],
     );
     return DashboardCard(
@@ -171,6 +181,13 @@ class ProfilesCard extends ConsumerWidget {
             DashboardCappedRow(spacing: _rowGap, start: nameRow, end: end)
           else
             nameRow,
+          if (profile == null && mobile) ...[
+            const SizedBox(height: 12),
+            const Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: AccountLoginButton(size: TonalButtonSize.section),
+            ),
+          ],
           if (profile != null && !compact)
             LayoutBuilder(
               builder: (context, constraints) {

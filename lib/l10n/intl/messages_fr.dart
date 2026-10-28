@@ -261,6 +261,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "accessControlSelectedCount": m0,
     "account": MessageLookupByLibrary.simpleMessage("Compte"),
+    "accountLogin": MessageLookupByLibrary.simpleMessage(
+      "Connexion au panneau",
+    ),
     "action": MessageLookupByLibrary.simpleMessage("Action"),
     "actionDelayTest": MessageLookupByLibrary.simpleMessage(
       "Tester tous les délais",

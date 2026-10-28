@@ -249,6 +249,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "accessControlSelectedCount": m0,
     "account": MessageLookupByLibrary.simpleMessage("Аккаунт"),
+    "accountLogin": MessageLookupByLibrary.simpleMessage(
+      "Войти в аккаунт панели",
+    ),
     "action": MessageLookupByLibrary.simpleMessage("Действие"),
     "actionDelayTest": MessageLookupByLibrary.simpleMessage(
       "Проверить все задержки",

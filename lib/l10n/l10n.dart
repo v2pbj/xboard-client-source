@@ -1081,6 +1081,16 @@ class AppLocalizations {
     return Intl.message('Account', name: 'account', desc: '', args: []);
   }
 
+  /// `Sign in to panel account`
+  String get accountLogin {
+    return Intl.message(
+      'Sign in to panel account',
+      name: 'accountLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Backup`
   String get backup {
     return Intl.message('Backup', name: 'backup', desc: '', args: []);

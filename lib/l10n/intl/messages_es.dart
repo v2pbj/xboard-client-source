@@ -256,6 +256,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "accessControlSelectedCount": m0,
     "account": MessageLookupByLibrary.simpleMessage("Cuenta"),
+    "accountLogin": MessageLookupByLibrary.simpleMessage(
+      "Iniciar sesión en el panel",
+    ),
     "action": MessageLookupByLibrary.simpleMessage("Acción"),
     "actionDelayTest": MessageLookupByLibrary.simpleMessage(
       "Probar la latencia de todos",

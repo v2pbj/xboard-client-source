@@ -136,6 +136,7 @@
   "databaseWriteFailedTip": "Échec de l’enregistrement de la modification ; elle a été annulée",
   "tip": "Astuce",
   "account": "Compte",
+  "accountLogin": "Connexion au panneau",
   "backup": "Sauvegarde",
   "backupSuccess": "Sauvegarde réussie",
   "noInfo": "Aucune information",

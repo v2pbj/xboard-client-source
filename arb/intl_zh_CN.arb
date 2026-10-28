@@ -136,6 +136,7 @@
   "databaseWriteFailedTip": "保存更改失败，已回滚",
   "tip": "提示",
   "account": "账号",
+  "accountLogin": "登录面板账号",
   "backup": "备份",
   "backupSuccess": "备份成功",
   "noInfo": "暂无信息",

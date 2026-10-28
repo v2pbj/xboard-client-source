@@ -34,6 +34,7 @@ const watchExecution = false;
 
 const safeModeBuild = bool.fromEnvironment('SAFE_MODE');
 
+/// Bumped when the notice changes; startup records the version last shown.
 const disclaimerVersion = 1;
 
 String _randomPipeId() {

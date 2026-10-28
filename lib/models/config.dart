@@ -79,7 +79,7 @@ const defaultFilters = [
   ),
 ];
 
-const defaultAppSettingProps = AppSettingProps();
+const defaultAppSettingProps = AppSettingProps(locale: 'zh_CN');
 const defaultVpnProps = VpnProps();
 const defaultAuthenticationProps = AuthenticationProps();
 const defaultNetworkProps = NetworkProps();

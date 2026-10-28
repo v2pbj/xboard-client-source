@@ -3,10 +3,14 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/panel_account.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/test_profiles.dart';
 
 const _base = 'https://panel.example.com';
 const _loginPath = '/api/v1/passport/auth/login';
@@ -60,15 +64,54 @@ Map<String, Object?> _subscribe({
   },
 };
 
+/// Records what the account page asked of the profile list, so a test can tell
+/// an update of the imported profile from a second import.
+class _RecordingProfilesAction extends ProfilesAction {
+  final List<Profile> updated = [];
+  final List<(String, String?)> added = [];
+  final List<int> deleted = [];
+
+  @override
+  Future<void> updateProfile(
+    Profile profile, {
+    bool showLoading = false,
+  }) async {
+    updated.add(profile);
+    ref.read(profilesProvider.notifier).put(profile);
+  }
+
+  @override
+  Future<void> addProfileFromLink(
+    String link, {
+    String? label,
+    String ageSecretKey = '',
+  }) async {
+    added.add((link, label));
+  }
+
+  @override
+  Future<void> deleteProfile(int id) async {
+    deleted.add(id);
+    await ref.read(profilesProvider.notifier).del(id);
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  ProviderContainer containerWith(_ScriptedAdapter adapter) {
+  ProviderContainer containerWith(
+    _ScriptedAdapter adapter, {
+    List<Profile> profiles = const [],
+    ProfilesAction Function()? profilesAction,
+  }) {
     final container = ProviderContainer(
       overrides: [
         panelAccountProvider.overrideWith(
           () => PanelAccountNotifier(dio: Dio()..httpClientAdapter = adapter),
         ),
+        profilesProvider.overrideWith(() => TestProfiles(profiles)),
+        if (profilesAction != null)
+          profilesActionProvider.overrideWith(profilesAction),
       ],
     );
     addTearDown(container.dispose);
@@ -417,6 +460,104 @@ void main() {
           ),
         ),
       );
+    });
+
+    test('updates the profile an earlier import created', () async {
+      final previous = Profile.normal(
+        label: 'me@example.com',
+        url: '$_subscribeUrl&flag=clash',
+      ).copyWith(id: 41);
+      final action = _RecordingProfilesAction();
+      final adapter = _ScriptedAdapter(
+        (options) => options.uri.path == _loginPath
+            ? _json({
+                'data': {'auth_data': 'tok-1'},
+              })
+            : _json(_subscribe()),
+      );
+      final container = containerWith(
+        adapter,
+        profiles: [previous],
+        profilesAction: () => action,
+      );
+      final notifier = container.read(panelAccountProvider.notifier);
+      await notifier.login(
+        baseUrl: _base,
+        email: 'me@example.com',
+        password: 'pw',
+      );
+
+      await notifier.importProfile();
+
+      expect(action.added, isEmpty);
+      expect(action.updated, hasLength(1));
+      expect(action.updated.single.id, 41);
+      expect(
+        action.updated.single.url,
+        '$_subscribeUrl&flag=clashmeta',
+        reason: 'the surviving profile is re-pointed at the template it needs',
+      );
+      expect(action.deleted, isEmpty);
+      expect(container.read(profilesProvider), hasLength(1));
+    });
+
+    test('keeps one profile when a copy piled up', () async {
+      final copies = [
+        for (final id in [41, 42, 43])
+          Profile.normal(
+            label: 'me@example.com',
+            url: '$_subscribeUrl&flag=clash',
+          ).copyWith(id: id),
+      ];
+      final action = _RecordingProfilesAction();
+      final adapter = _ScriptedAdapter(
+        (options) => options.uri.path == _loginPath
+            ? _json({
+                'data': {'auth_data': 'tok-1'},
+              })
+            : _json(_subscribe()),
+      );
+      final container = containerWith(
+        adapter,
+        profiles: copies,
+        profilesAction: () => action,
+      );
+      final notifier = container.read(panelAccountProvider.notifier);
+      await notifier.login(
+        baseUrl: _base,
+        email: 'me@example.com',
+        password: 'pw',
+      );
+
+      await notifier.importProfile();
+
+      expect(action.updated.single.id, 41);
+      expect(action.deleted, [42, 43]);
+      expect(container.read(profilesProvider).map((item) => item.id), [41]);
+    });
+
+    test('adds a profile the first time, then never again', () async {
+      final action = _RecordingProfilesAction();
+      final adapter = _ScriptedAdapter(
+        (options) => options.uri.path == _loginPath
+            ? _json({
+                'data': {'auth_data': 'tok-1'},
+              })
+            : _json(_subscribe()),
+      );
+      final container = containerWith(adapter, profilesAction: () => action);
+      final notifier = container.read(panelAccountProvider.notifier);
+      await notifier.login(
+        baseUrl: _base,
+        email: 'me@example.com',
+        password: 'pw',
+      );
+
+      await notifier.importProfile(label: 'me@example.com');
+
+      expect(action.updated, isEmpty);
+      expect(action.added.single.$1, '$_subscribeUrl&flag=clashmeta');
+      expect(action.added.single.$2, 'me@example.com');
     });
   });
 }

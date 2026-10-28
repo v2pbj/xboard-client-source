@@ -185,14 +185,34 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
     }
   }
 
+  /// Importing twice must not leave two profiles behind: the panel hands out
+  /// the same subscription every time, so an import updates the profile an
+  /// earlier import created, and removes copies left by a build that did not
+  /// keep track of it (an older build asked for the `clash` template).
   Future<void> importProfile({String? label}) async {
     final subscribeUrl = state.subscribeUrl;
     if (subscribeUrl.isEmpty) {
       throw const MessageException('还没有拿到订阅地址，请先登录');
     }
-    await ref
-        .read(profilesActionProvider.notifier)
-        .addProfileFromLink(_withClashFlag(subscribeUrl), label: label);
+    final url = _withClashFlag(subscribeUrl);
+    final actions = ref.read(profilesActionProvider.notifier);
+    final matches = [
+      for (final profile in ref.read(profilesProvider))
+        if (profile.url.isNotEmpty && _isSameSubscription(profile.url, url))
+          profile,
+    ];
+    if (matches.isEmpty) {
+      await actions.addProfileFromLink(url, label: label);
+      return;
+    }
+    final kept = matches.first.copyWith(
+      url: url,
+      label: label == null || label.isEmpty ? matches.first.label : label,
+    );
+    await actions.updateProfile(kept, showLoading: true);
+    for (final duplicate in matches.skip(1)) {
+      await actions.deleteProfile(duplicate.id);
+    }
   }
 
   Future<void> logout() async {
@@ -222,6 +242,23 @@ String _withClashFlag(String url) {
   return uri
       .replace(queryParameters: {...uri.queryParameters, 'flag': 'clashmeta'})
       .toString();
+}
+
+/// The panel reads `flag` to choose the template, so the same subscription gets
+/// stored under different links across builds. Two links are that same
+/// subscription when they point at the same place with the same token.
+bool _isSameSubscription(String first, String second) {
+  final left = Uri.tryParse(first);
+  final right = Uri.tryParse(second);
+  if (left == null || right == null) return first == second;
+  return _subscriptionKey(left) == _subscriptionKey(right);
+}
+
+String _subscriptionKey(Uri uri) {
+  final query = Map<String, String>.from(uri.queryParameters)..remove('flag');
+  final keys = query.keys.toList()..sort();
+  return '${uri.scheme}://${uri.host}${uri.path}'
+      '?${[for (final key in keys) '$key=${query[key]}'].join('&')}';
 }
 
 String _normalizeBaseUrl(String value) {

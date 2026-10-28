@@ -520,6 +520,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "disclaimerNoServiceStatement": MessageLookupByLibrary.simpleMessage(
       "本软件自身不提供任何代理服务器、节点、订阅、机场或网络接入服务，也不与任何此类服务的提供者存在合作、代理或担保关系。",
     ),
+    "disclaimerNotice": MessageLookupByLibrary.simpleMessage(
+      "继续使用即表示你已阅读《免责声明》。",
+    ),
     "disclaimerPrivacyContent": MessageLookupByLibrary.simpleMessage(
       "本软件不会收集或上传你的订阅地址、节点信息、配置内容、访问的网站、连接记录、流量内容和日志，这些数据仅保存在你的设备本地，开发者无法获取。\n\n本软件只会在你使用相应功能时访问外部网络，例如更新订阅时访问你提供的订阅地址、检查更新时访问 GitHub。\n\n本软件在所有平台上均未集成任何数据统计或崩溃上报服务。",
     ),
@@ -550,6 +553,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "本软件仅供学习交流、技术研究等非商业用途。严禁将本软件用于任何商业目的，包括但不限于付费分发、捆绑销售、作为商业服务的组成部分或以本软件名义开展经营活动；任何商业行为均与本软件及其开发者无关。\n\n严禁将本软件用于违反你所在国家或地区法律法规的活动，包括但不限于绕过依法设置的网络访问限制、传播违法信息、实施网络攻击或侵犯他人合法权益。",
     ),
     "disclaimerUsageTitle": MessageLookupByLibrary.simpleMessage("使用限制"),
+    "disclaimerViewFull": MessageLookupByLibrary.simpleMessage("查看全文"),
     "disclaimerWarrantyContent": MessageLookupByLibrary.simpleMessage(
       "本软件按“现状”和“可用”的原则提供，不附带任何明示或默示的担保，包括但不限于适销性、特定用途适用性、不侵权以及持续可用、无错误、无安全漏洞的担保。\n\n开发者不保证本软件能满足你的需求，也不保证本软件的运行不会中断或不会出现错误。",
     ),

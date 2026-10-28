@@ -332,6 +332,8 @@
   "disclaimerChangesContent": "开发者有权随版本更新修改本声明，修改后的内容随新版本发布即生效。你在更新后继续使用本软件，即视为接受修改后的声明。",
   "disclaimerAcceptTitle": "接受声明",
   "disclaimerAcceptContent": "一旦你安装、复制或使用本软件，即视为你已阅读并同意本声明的全部内容。如你不同意本声明的任何条款，请立即停止使用并卸载本软件。",
+  "disclaimerNotice": "继续使用即表示你已阅读《免责声明》。",
+  "disclaimerViewFull": "查看全文",
   "disclaimerRestateTitle": "复述声明",
   "disclaimerRestateTip": "为确认你已知悉，请在下方输入框中完整复述以下声明：",
   "disclaimerRestateHint": "在此输入上述声明",

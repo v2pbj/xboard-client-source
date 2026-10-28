@@ -4,6 +4,7 @@ import 'package:fl_clash/manager/app_manager.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
+import 'package:fl_clash/views/disclaimer.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
@@ -70,7 +71,6 @@ class _HomeShell extends ConsumerWidget {
       color: SurfaceLevel.page.colorOf(context.colorScheme),
       child: Column(
         children: [
-          const DisclaimerNotice(),
           Expanded(
             child: Stack(
               children: [
@@ -83,6 +83,20 @@ class _HomeShell extends ConsumerWidget {
                           : 0,
                       child: _BodyPadding(isMobile: isMobile, child: child),
                     ),
+                  ),
+                ),
+                PositionedDirectional(
+                  start: 0,
+                  end: 0,
+                  top: 0,
+                  child: DisclaimerNotice(
+                    onViewFull: () {
+                      showExtend(
+                        context,
+                        props: const ExtendProps(forceFull: true),
+                        builder: (_) => const DisclaimerView(),
+                      );
+                    },
                   ),
                 ),
                 PositionedDirectional(

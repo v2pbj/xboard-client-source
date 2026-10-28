@@ -332,6 +332,8 @@
   "disclaimerChangesContent": "Les développeurs peuvent réviser cette déclaration à chaque version, et la révision prend effet à la publication de cette version. Continuer à utiliser le Logiciel après une mise à jour signifie que vous acceptez la déclaration révisée.",
   "disclaimerAcceptTitle": "Acceptation",
   "disclaimerAcceptContent": "En installant, copiant ou utilisant le Logiciel, vous êtes réputé avoir lu et accepté l’intégralité de cette déclaration. Si vous n’êtes pas d’accord avec l’une de ses conditions, cessez immédiatement d’utiliser le Logiciel et désinstallez-le.",
+  "disclaimerNotice": "Continuer à utiliser le Logiciel vaut confirmation que vous avez lu l’Avertissement.",
+  "disclaimerViewFull": "Voir le texte intégral",
   "disclaimerRestateTitle": "Recopier la déclaration",
   "disclaimerRestateTip": "Pour confirmer que vous avez compris, saisissez la déclaration suivante en entier dans le champ ci-dessous :",
   "disclaimerRestateHint": "Saisissez la déclaration ci-dessus",

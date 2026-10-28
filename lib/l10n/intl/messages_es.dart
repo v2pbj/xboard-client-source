@@ -712,6 +712,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "disclaimerNoServiceStatement": MessageLookupByLibrary.simpleMessage(
       "El Software en sí no proporciona ningún servidor proxy, nodo, suscripción ni servicio de acceso a la red, y no mantiene ninguna relación de asociación, representación ni garantía con ningún proveedor de dichos servicios.",
     ),
+    "disclaimerNotice": MessageLookupByLibrary.simpleMessage(
+      "Seguir usando la aplicación implica que has leído el Aviso legal.",
+    ),
     "disclaimerPrivacyContent": MessageLookupByLibrary.simpleMessage(
       "El Software no recopila ni sube tus URL de suscripción, los detalles de los nodos, el contenido de las configuraciones, los sitios web visitados, los registros de conexión, el contenido del tráfico ni los registros. Estos datos permanecen en tu dispositivo y los desarrolladores no tienen acceso a ellos.\n\nEl Software solo accede a la red cuando usas una función que lo necesita, como obtener la URL de suscripción que indicaste al actualizar un perfil o conectarse a GitHub al buscar actualizaciones.\n\nEl Software no incluye ningún servicio de analítica ni de informes de fallos en ninguna plataforma.",
     ),
@@ -753,6 +756,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "disclaimerUsageTitle": MessageLookupByLibrary.simpleMessage(
       "Restricciones de uso",
+    ),
+    "disclaimerViewFull": MessageLookupByLibrary.simpleMessage(
+      "Ver el texto completo",
     ),
     "disclaimerWarrantyContent": MessageLookupByLibrary.simpleMessage(
       "El Software se proporciona “tal cual” y “según disponibilidad”, sin garantía de ningún tipo, expresa o implícita, incluidas, entre otras, las garantías de comerciabilidad, idoneidad para un fin concreto, no infracción, disponibilidad ininterrumpida, ausencia de errores o ausencia de vulnerabilidades de seguridad.\n\nLos desarrolladores no garantizan que el Software satisfaga tus necesidades ni que funcione sin interrupciones ni errores.",

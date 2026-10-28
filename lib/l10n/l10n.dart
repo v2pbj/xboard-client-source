@@ -2681,6 +2681,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Continuing to use the app means you have read the Disclaimer.`
+  String get disclaimerNotice {
+    return Intl.message(
+      'Continuing to use the app means you have read the Disclaimer.',
+      name: 'disclaimerNotice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View full text`
+  String get disclaimerViewFull {
+    return Intl.message(
+      'View full text',
+      name: 'disclaimerViewFull',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Restate the statement`
   String get disclaimerRestateTitle {
     return Intl.message(

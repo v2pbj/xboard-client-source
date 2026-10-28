@@ -332,6 +332,8 @@
   "disclaimerChangesContent": "The developers may revise this statement with any release, and the revision takes effect when that release is published. Continuing to use the Software after updating means you accept the revised statement.",
   "disclaimerAcceptTitle": "Acceptance",
   "disclaimerAcceptContent": "By installing, copying, or using the Software, you are deemed to have read and agreed to this entire statement. If you disagree with any of its terms, stop using and uninstall the Software immediately.",
+  "disclaimerNotice": "Continuing to use the app means you have read the Disclaimer.",
+  "disclaimerViewFull": "View full text",
   "disclaimerRestateTitle": "Restate the statement",
   "disclaimerRestateTip": "To confirm you understand, enter the following statement in full in the field below:",
   "disclaimerRestateHint": "Enter the statement above",

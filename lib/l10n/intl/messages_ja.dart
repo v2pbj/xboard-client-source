@@ -567,6 +567,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "disclaimerNoServiceStatement": MessageLookupByLibrary.simpleMessage(
       "本ソフトウェア自体は、プロキシサーバー、ノード、サブスクリプション、ネットワーク接続サービスを一切提供しておらず、それらのサービス提供者と提携、代理、保証の関係はありません。",
     ),
+    "disclaimerNotice": MessageLookupByLibrary.simpleMessage(
+      "引き続き使用すると、免責事項を読んだものとみなされます。",
+    ),
     "disclaimerPrivacyContent": MessageLookupByLibrary.simpleMessage(
       "本ソフトウェアは、サブスクリプション URL、ノード情報、設定内容、閲覧したウェブサイト、接続記録、通信内容、ログを収集またはアップロードしません。これらのデータは端末内にのみ保存され、開発者がアクセスすることはできません。\n\n本ソフトウェアが外部ネットワークにアクセスするのは、プロファイル更新時に指定されたサブスクリプション URL へアクセスする場合や、アップデート確認時に GitHub へアクセスする場合など、該当する機能を使用したときのみです。\n\n本ソフトウェアには、どのプラットフォームでも統計やクラッシュレポートのサービスは一切組み込まれていません。",
     ),
@@ -603,6 +606,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "本ソフトウェアは学習、交流、技術研究などの非商用目的でのみ使用できます。有償配布、抱き合わせ販売、商用サービスの一部としての利用、本ソフトウェアの名義での事業活動など、あらゆる商用目的での使用を固く禁じます。いかなる商業行為も本ソフトウェアおよび開発者とは一切関係ありません。\n\nお住まいの国または地域の法令に違反する目的での使用を固く禁じます。これには、法に基づくネットワークアクセス制限の回避、違法情報の拡散、サイバー攻撃、他者の権利の侵害などが含まれますが、これらに限りません。",
     ),
     "disclaimerUsageTitle": MessageLookupByLibrary.simpleMessage("使用の制限"),
+    "disclaimerViewFull": MessageLookupByLibrary.simpleMessage("全文を表示"),
     "disclaimerWarrantyContent": MessageLookupByLibrary.simpleMessage(
       "本ソフトウェアは「現状のまま」かつ「提供可能な範囲で」提供され、商品性、特定目的への適合性、非侵害、継続的な可用性、エラーやセキュリティ上の脆弱性がないことの保証を含め、明示または黙示を問わずいかなる保証も伴いません。\n\n開発者は、本ソフトウェアが利用者の要件を満たすこと、また中断やエラーなく動作することを保証しません。",
     ),

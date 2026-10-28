@@ -332,6 +332,8 @@
   "disclaimerChangesContent": "開発者はバージョンの更新に伴い本声明を変更することがあり、変更内容は新しいバージョンの公開とともに効力を生じます。更新後も本ソフトウェアを引き続き使用した場合、変更後の声明に同意したものとみなされます。",
   "disclaimerAcceptTitle": "声明への同意",
   "disclaimerAcceptContent": "本ソフトウェアをインストール、複製または使用した時点で、本声明のすべての内容を読み、同意したものとみなされます。いずれかの条項に同意いただけない場合は、直ちに使用を中止し、本ソフトウェアをアンインストールしてください。",
+  "disclaimerNotice": "引き続き使用すると、免責事項を読んだものとみなされます。",
+  "disclaimerViewFull": "全文を表示",
   "disclaimerRestateTitle": "声明の復唱",
   "disclaimerRestateTip": "内容を理解したことを確認するため、以下の声明を下の入力欄に正確に入力してください：",
   "disclaimerRestateHint": "上記の声明を入力",

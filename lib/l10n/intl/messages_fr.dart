@@ -713,6 +713,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "disclaimerNoServiceStatement": MessageLookupByLibrary.simpleMessage(
       "Le Logiciel ne fournit lui-même aucun serveur proxy, nœud, abonnement ni service d’accès au réseau, et n’a aucun partenariat, mandat ni lien de garantie avec un quelconque fournisseur de tels services.",
     ),
+    "disclaimerNotice": MessageLookupByLibrary.simpleMessage(
+      "Continuer à utiliser le Logiciel vaut confirmation que vous avez lu l’Avertissement.",
+    ),
     "disclaimerPrivacyContent": MessageLookupByLibrary.simpleMessage(
       "Le Logiciel ne collecte ni ne transmet vos URL d’abonnement, détails de nœuds, contenus de configuration, sites visités, historiques de connexion, contenus de trafic ou journaux. Ces données restent sur votre appareil et les développeurs n’y ont pas accès.\n\nLe Logiciel n’accède au réseau que lorsque vous utilisez une fonction qui en a besoin, par exemple pour récupérer l’URL d’abonnement que vous avez fournie lors de la mise à jour d’un profil, ou pour contacter GitHub lors de la recherche de mises à jour.\n\nLe Logiciel n’inclut aucun service d’analyse ni de rapport de plantage, sur aucune plateforme.",
     ),
@@ -754,6 +757,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "disclaimerUsageTitle": MessageLookupByLibrary.simpleMessage(
       "Restrictions d’utilisation",
+    ),
+    "disclaimerViewFull": MessageLookupByLibrary.simpleMessage(
+      "Voir le texte intégral",
     ),
     "disclaimerWarrantyContent": MessageLookupByLibrary.simpleMessage(
       "Le Logiciel est fourni « tel quel » et « selon disponibilité », sans garantie d’aucune sorte, expresse ou implicite, y compris, sans s’y limiter, les garanties de qualité marchande, d’adéquation à un usage particulier, d’absence de contrefaçon, de disponibilité ininterrompue, d’absence d’erreurs ou d’absence de failles de sécurité.\n\nLes développeurs ne garantissent pas que le Logiciel répondra à vos besoins ni qu’il fonctionnera sans interruption ni erreur.",

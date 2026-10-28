@@ -667,6 +667,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "disclaimerNoServiceStatement": MessageLookupByLibrary.simpleMessage(
       "The Software itself does not provide any proxy server, node, subscription, or network access service, and has no partnership, agency, or guarantee relationship with any provider of such services.",
     ),
+    "disclaimerNotice": MessageLookupByLibrary.simpleMessage(
+      "Continuing to use the app means you have read the Disclaimer.",
+    ),
     "disclaimerPrivacyContent": MessageLookupByLibrary.simpleMessage(
       "The Software does not collect or upload your subscription URLs, node details, configuration content, visited websites, connection records, traffic content, or logs. This data stays on your device and the developers have no access to it.\n\nThe Software only reaches the network when you use a feature that needs it, such as fetching the subscription URL you provided when updating a profile, or contacting GitHub when checking for updates.\n\nThe Software includes no analytics or crash reporting service on any platform.",
     ),
@@ -708,6 +711,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "disclaimerUsageTitle": MessageLookupByLibrary.simpleMessage(
       "Restrictions on use",
+    ),
+    "disclaimerViewFull": MessageLookupByLibrary.simpleMessage(
+      "View full text",
     ),
     "disclaimerWarrantyContent": MessageLookupByLibrary.simpleMessage(
       "The Software is provided \"as is\" and \"as available\", without warranty of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, non-infringement, uninterrupted availability, freedom from errors, or freedom from security vulnerabilities.\n\nThe developers do not guarantee that the Software will meet your needs or that it will run without interruption or error.",

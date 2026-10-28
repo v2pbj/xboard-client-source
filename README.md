@@ -11,6 +11,8 @@
 
 | 版本 | 标签 | 应用源码 commit | 内核源码 commit | 构建依赖 |
 | --- | --- | --- | --- | --- |
+| 0.9.2（T6：修正登录取订阅的模板类型，节点不再为空） | `v0.9.2-t6` | `e4a67ebf27af569170540d1e55ae5a6ad452dd6a` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
+| 0.9.2（T5：Windows 窗口标题与安装器品牌） | `v0.9.2-t5` | `bdf292293804172ce23c3600a9e981dd5dd871c3` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T4：安装包内置面板地址） | `v0.9.2-t4` | `28023bbf44a5d270cb6586dbc1b9f4fb0f277e1c` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T3：移除上游 Telegram 入口、关闭应用内对上游更新的宣传） | `v0.9.2-t3` | `2f853500a4e8290ed7b93180ce394dc66db5bce1` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T2：修正「关于」页源码链接） | `v0.9.2-t2` | `9ef280a969a0cac04f55c1cc7d30edfb31edaee6` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
@@ -23,6 +25,10 @@
 
 | 版本 | 文件 | 大小 | SHA-256 |
 | --- | --- | --- | --- |
+| T6 | `bearbooster-0.9.2-t6-source.zip` | 22.2 MB | `A037B5C42E1F329BB2C3265FA086FD7EF7E76EE7E3E6354FFD3C8B048EC109C5` |
+| T6 | `bearbooster-0.9.2-t6-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T5 | `bearbooster-0.9.2-t5-source.zip` | 22.2 MB | `29FA7DE77844CE1772EC8C28700E6BBAD8FBA90A3BC49DA7460CEF2F868FE6E8` |
+| T5 | `bearbooster-0.9.2-t5-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T4 | `bearbooster-0.9.2-t4-source.zip` | 22.2 MB | `6927C94400DC783DDB0F3A09237FA2DD6D0F6200CB08BAE6443EFFA6A9969E67` |
 | T4 | `bearbooster-0.9.2-t4-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T3 | `bearbooster-0.9.2-t3-source.zip` | 22.2 MB | `7E40133096251380F32E83BF93D5FF12B2CD38E5AC5A8E35F0FCCE07F0BF7B1B` |
@@ -61,5 +67,8 @@
 ## 联系方式
 
 需要源码、构建帮助或发现本仓库缺少某个已发布版本，请开 **Issue**。
+## 各版本改动摘要
 
-| `v0.9.2-t5` | `bdf29229` | `c5062921` | Windows 窗口标题改为「白熊加速」；安装器命名与 `BearBooster.exe` 对齐、`publisher_url` 指向本仓库；CI 测试清单加入 `test/setup_test.dart`（并修掉它暴露的环境变量冲突） |
+- **T6**：登录后取订阅时请求 Clash.Meta 模板；此前固定请求经典 Clash 模板，而本面板只提供 VLESS 节点，经典模板会把这些节点全部丢弃，导致节点列表为空；
+- **T5**：Windows 窗口标题改为「白熊加速」；安装器命名与 `BearBooster.exe` 对齐、`publisher_url` 指向本仓库；CI 测试清单加入 `test/setup_test.dart`（并修掉它暴露的环境变量冲突）；
+- 更早的 T1–T4 见上表与各自的 Release 说明。

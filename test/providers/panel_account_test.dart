@@ -3,9 +3,11 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/panel_account.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,6 +99,7 @@ class _RecordingProfilesAction extends ProfilesAction {
 }
 
 void main() {
+  setUpAll(() => AppLocalizations.load(const Locale('en')));
   TestWidgetsFlutterBinding.ensureInitialized();
 
   ProviderContainer containerWith(
@@ -227,7 +230,7 @@ void main() {
           isA<MessageException>().having(
             (error) => error.message,
             'message',
-            '请先填写面板地址',
+            currentAppLocalizations.panelBaseUrlRequired,
           ),
         ),
       );
@@ -247,7 +250,7 @@ void main() {
           isA<MessageException>().having(
             (error) => error.message,
             'message',
-            '登录失败：面板没有返回令牌',
+            currentAppLocalizations.panelLoginNoToken,
           ),
         ),
       );
@@ -369,7 +372,7 @@ void main() {
           isA<MessageException>().having(
             (error) => error.message,
             'message',
-            '面板响应超时，请检查网络或面板地址',
+            currentAppLocalizations.panelTimeout,
           ),
         ),
       );
@@ -456,7 +459,7 @@ void main() {
           isA<MessageException>().having(
             (error) => error.message,
             'message',
-            '还没有拿到订阅地址，请先登录',
+            currentAppLocalizations.panelNoSubscriptionUrl,
           ),
         ),
       );

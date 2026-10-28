@@ -130,7 +130,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
   }) async {
     final base = _normalizeBaseUrl(baseUrl);
     if (base.isEmpty) {
-      throw const MessageException('请先填写面板地址');
+      throw MessageException(currentAppLocalizations.panelBaseUrlRequired);
     }
     state = state.copyWith(isLoading: true);
     try {
@@ -142,7 +142,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
       final token = '${data['auth_data'] ?? data['token'] ?? ''}';
       if (token.isEmpty) {
         state = state.copyWith(isLoading: false);
-        throw const MessageException('登录失败：面板没有返回令牌');
+        throw MessageException(currentAppLocalizations.panelLoginNoToken);
       }
       state = state.copyWith(
         baseUrl: base,
@@ -192,7 +192,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
   Future<void> importProfile({String? label}) async {
     final subscribeUrl = state.subscribeUrl;
     if (subscribeUrl.isEmpty) {
-      throw const MessageException('还没有拿到订阅地址，请先登录');
+      throw MessageException(currentAppLocalizations.panelNoSubscriptionUrl);
     }
     final url = _withClashFlag(subscribeUrl);
     final actions = ref.read(profilesActionProvider.notifier);
@@ -297,7 +297,9 @@ String _messageOf(DioException error) {
   if (data is Map && data['message'] != null) return '${data['message']}';
   if (error.type == DioExceptionType.connectionTimeout ||
       error.type == DioExceptionType.receiveTimeout) {
-    return '面板响应超时，请检查网络或面板地址';
+    return currentAppLocalizations.panelTimeout;
   }
-  return '无法连接面板：${error.message ?? error.type.name}';
+  return currentAppLocalizations.panelConnectFailed(
+    error.message ?? error.type.name,
+  );
 }

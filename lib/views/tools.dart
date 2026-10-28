@@ -159,7 +159,7 @@ class _AccountItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const GlyphIcon(AppGlyphs.cloudSync),
-      title: const Text('账号'),
+      title: Text(context.appLocalizations.account),
       widget: const AccountView(),
     );
   }

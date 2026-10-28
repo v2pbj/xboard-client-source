@@ -55,7 +55,7 @@ class _AccountViewState extends ConsumerState<AccountView> {
         password: _passwordController.text,
       );
       await accountAction.importProfile(label: _emailController.text.trim());
-    }, '登录成功，订阅已导入');
+    }, context.appLocalizations.accountLoginSuccess);
   }
 
   Future<void> _updateSubscription() {
@@ -63,25 +63,26 @@ class _AccountViewState extends ConsumerState<AccountView> {
       final accountAction = ref.read(panelAccountProvider.notifier);
       await accountAction.refresh();
       await accountAction.importProfile();
-    }, '订阅已更新');
+    }, context.appLocalizations.accountSubscriptionUpdated);
   }
 
   Future<void> _logout() {
     return _run(
       () => ref.read(panelAccountProvider.notifier).logout(),
-      '已退出登录',
+      context.appLocalizations.accountLoggedOut,
     );
   }
 
   List<Widget> _buildLoginForm() {
+    final appLocalizations = context.appLocalizations;
     return [
       const SizedBox(height: 8),
       TextField(
         controller: _baseUrlController,
         autocorrect: false,
         keyboardType: TextInputType.url,
-        decoration: const InputDecoration(
-          labelText: '面板地址',
+        decoration: InputDecoration(
+          labelText: appLocalizations.panelBaseUrl,
           hintText: 'https://your-panel.example.com',
         ),
       ),
@@ -90,52 +91,59 @@ class _AccountViewState extends ConsumerState<AccountView> {
         controller: _emailController,
         autocorrect: false,
         keyboardType: TextInputType.emailAddress,
-        decoration: const InputDecoration(labelText: '邮箱'),
+        decoration: InputDecoration(labelText: appLocalizations.email),
       ),
       const SizedBox(height: 12),
       TextField(
         controller: _passwordController,
         obscureText: true,
-        decoration: const InputDecoration(labelText: '密码'),
+        decoration: InputDecoration(labelText: appLocalizations.password),
       ),
       const SizedBox(height: 20),
-      FilledButton(onPressed: _login, child: const Text('登录并导入订阅')),
-      const SizedBox(height: 8),
-      const Text(
-        '登录后本机自动拉取你的订阅并导入为一个配置；账号密码只用于换取订阅地址，不会上传到别处。',
-        textAlign: TextAlign.center,
+      FilledButton(
+        onPressed: _login,
+        child: Text(appLocalizations.accountLoginAndImport),
       ),
+      const SizedBox(height: 8),
+      Text(appLocalizations.accountLoginFormDesc, textAlign: TextAlign.center),
     ];
   }
 
   List<Widget> _buildAccount(PanelAccountState account) {
+    final appLocalizations = context.appLocalizations;
     return [
       const SizedBox(height: 8),
       generateSection(
-        title: '我的账号',
+        title: appLocalizations.myAccount,
         items: [
-          ListItem(title: const Text('邮箱'), subtitle: Text(account.email)),
           ListItem(
-            title: const Text('套餐'),
+            title: Text(appLocalizations.email),
+            subtitle: Text(account.email),
+          ),
+          ListItem(
+            title: Text(appLocalizations.plan),
             subtitle: Text(account.planName.isEmpty ? '—' : account.planName),
           ),
           ListItem(
-            title: const Text('到期时间'),
+            title: Text(appLocalizations.expireTime),
             subtitle: Text(_formatTime(account.expiredAt)),
           ),
           ListItem(
-            title: const Text('已用 / 总量'),
+            title: Text(appLocalizations.usedOfTotal),
             subtitle: Text(
               '${_formatBytes(account.used)} / '
-              '${account.transferEnable <= 0 ? '不限' : _formatBytes(account.transferEnable)}',
+              '${account.transferEnable <= 0 ? appLocalizations.unlimited : _formatBytes(account.transferEnable)}',
             ),
           ),
         ],
       ),
       const SizedBox(height: 16),
-      FilledButton(onPressed: _updateSubscription, child: const Text('更新订阅')),
+      FilledButton(
+        onPressed: _updateSubscription,
+        child: Text(appLocalizations.updateSubscription),
+      ),
       const SizedBox(height: 8),
-      OutlinedButton(onPressed: _logout, child: const Text('退出登录')),
+      OutlinedButton(onPressed: _logout, child: Text(appLocalizations.logout)),
     ];
   }
 
@@ -144,7 +152,7 @@ class _AccountViewState extends ConsumerState<AccountView> {
     final account = ref.watch(panelAccountProvider);
     return CommonScaffold(
       isLoading: account.isLoading,
-      title: '账号',
+      title: context.appLocalizations.account,
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
           top: context.contentTopPadding,

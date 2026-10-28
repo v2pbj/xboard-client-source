@@ -1091,6 +1091,161 @@ class AppLocalizations {
     );
   }
 
+  /// `Panel address`
+  String get panelBaseUrl {
+    return Intl.message(
+      'Panel address',
+      name: 'panelBaseUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message('Email', name: 'email', desc: '', args: []);
+  }
+
+  /// `Plan`
+  String get plan {
+    return Intl.message('Plan', name: 'plan', desc: '', args: []);
+  }
+
+  /// `My account`
+  String get myAccount {
+    return Intl.message('My account', name: 'myAccount', desc: '', args: []);
+  }
+
+  /// `Used / total`
+  String get usedOfTotal {
+    return Intl.message(
+      'Used / total',
+      name: 'usedOfTotal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited`
+  String get unlimited {
+    return Intl.message('Unlimited', name: 'unlimited', desc: '', args: []);
+  }
+
+  /// `Sign out`
+  String get logout {
+    return Intl.message('Sign out', name: 'logout', desc: '', args: []);
+  }
+
+  /// `Update subscription`
+  String get updateSubscription {
+    return Intl.message(
+      'Update subscription',
+      name: 'updateSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in and import subscription`
+  String get accountLoginAndImport {
+    return Intl.message(
+      'Sign in and import subscription',
+      name: 'accountLoginAndImport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signing in pulls your subscription from the panel and imports it as a profile. The credentials are only exchanged for the subscription address and are never uploaded anywhere else.`
+  String get accountLoginFormDesc {
+    return Intl.message(
+      'Signing in pulls your subscription from the panel and imports it as a profile. The credentials are only exchanged for the subscription address and are never uploaded anywhere else.',
+      name: 'accountLoginFormDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signed in; subscription imported`
+  String get accountLoginSuccess {
+    return Intl.message(
+      'Signed in; subscription imported',
+      name: 'accountLoginSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription updated`
+  String get accountSubscriptionUpdated {
+    return Intl.message(
+      'Subscription updated',
+      name: 'accountSubscriptionUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signed out`
+  String get accountLoggedOut {
+    return Intl.message(
+      'Signed out',
+      name: 'accountLoggedOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the panel address first`
+  String get panelBaseUrlRequired {
+    return Intl.message(
+      'Enter the panel address first',
+      name: 'panelBaseUrlRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign-in failed: the panel returned no token`
+  String get panelLoginNoToken {
+    return Intl.message(
+      'Sign-in failed: the panel returned no token',
+      name: 'panelLoginNoToken',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No subscription address yet; sign in first`
+  String get panelNoSubscriptionUrl {
+    return Intl.message(
+      'No subscription address yet; sign in first',
+      name: 'panelNoSubscriptionUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The panel timed out; check the network or the panel address`
+  String get panelTimeout {
+    return Intl.message(
+      'The panel timed out; check the network or the panel address',
+      name: 'panelTimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cannot reach the panel: {error}`
+  String panelConnectFailed(Object error) {
+    return Intl.message(
+      'Cannot reach the panel: $error',
+      name: 'panelConnectFailed',
+      desc: '',
+      args: [error],
+    );
+  }
+
   /// `Backup`
   String get backup {
     return Intl.message('Backup', name: 'backup', desc: '', args: []);

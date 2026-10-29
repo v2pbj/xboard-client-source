@@ -164,7 +164,7 @@ jobs:
           PANEL_BASE_URL: ''
         run: |
           set +e
-          flutter test test/providers/panel_account_test.dart test/tool/packaging_config_test.dart test/setup_test.dart test/android_tv_launcher_icon_test.dart test/common/protocol_test.dart test/common/link_test.dart test/common/system_test.dart --reporter expanded 2>&1 | tee test.log
+          flutter test test/providers/panel_account_test.dart test/tool/packaging_config_test.dart test/tool/android_channel_package_test.dart test/setup_test.dart test/android_tv_launcher_icon_test.dart test/common/protocol_test.dart test/common/link_test.dart test/common/system_test.dart --reporter expanded 2>&1 | tee test.log
           code=${PIPESTATUS[0]}
           if [ "$code" -ne 0 ]; then
             tail -45 test.log | sed 's/%/%25/g' |

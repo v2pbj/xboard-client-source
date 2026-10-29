@@ -77,6 +77,13 @@ class Navigation implements NavigationPort {
         builder: (_) => const ToolsView(key: GlobalObjectKey(PageLabel.tools)),
         modes: [NavigationItemMode.desktop, NavigationItemMode.mobile],
       ),
+      NavigationItem(
+        glyph: AppGlyphs.account,
+        label: PageLabel.account,
+        builder: (_) =>
+            const AccountView(key: GlobalObjectKey(PageLabel.account)),
+        modes: [NavigationItemMode.desktop, NavigationItemMode.mobile],
+      ),
     ];
   }
 

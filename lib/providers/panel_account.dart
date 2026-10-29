@@ -19,6 +19,12 @@ const _emailKey = 'panel_account_email';
 const _loginPath = '/api/v1/passport/auth/login';
 const _subscribePath = '/api/v1/user/getSubscribe';
 
+/// The front page is the one address meant to outlive a panel rename, so the
+/// account page asks it where the panel lives right now.
+const _endpointSeed = 'https://app.xycould.top';
+const _endpointPath = '/client-endpoint.json';
+const _discoveredBaseUrlKey = 'panel_account_discovered_base_url';
+
 @immutable
 class PanelAccountState {
   const PanelAccountState({
@@ -183,6 +189,42 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
       }
       throw MessageException(_messageOf(error));
     }
+  }
+
+  /// Follows the panel when it moves. A base URL the user typed is left alone:
+  /// only an empty one, or the one this method wrote last time, is replaced.
+  Future<void> syncBaseUrl() async {
+    final preferences = await SharedPreferences.getInstance();
+    final discovered = preferences.getString(_discoveredBaseUrlKey) ?? '';
+    final current = _normalizeBaseUrl(state.baseUrl);
+    if (current.isNotEmpty && current != discovered) return;
+    String candidate;
+    try {
+      final response = await _dio.get<dynamic>(
+        '$_endpointSeed$_endpointPath',
+        options: Options(
+          responseType: ResponseType.json,
+          receiveTimeout: const Duration(seconds: 8),
+        ),
+      );
+      candidate = _normalizeBaseUrl(
+        '${_dataOf(response.data)['panel_base_url'] ?? ''}',
+      );
+    } on DioException {
+      // An unreachable front page leaves the stored address in place; the form
+      // still accepts a hand-typed one.
+      return;
+    }
+    final uri = Uri.tryParse(candidate);
+    final isUsable =
+        uri != null &&
+        (uri.scheme == 'https' || uri.scheme == 'http') &&
+        uri.host.isNotEmpty;
+    if (!isUsable) return;
+    await preferences.setString(_discoveredBaseUrlKey, candidate);
+    if (!ref.mounted || candidate == current) return;
+    state = state.copyWith(baseUrl: candidate);
+    await _persist();
   }
 
   /// Importing twice must not leave two profiles behind: the panel hands out

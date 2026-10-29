@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/panel_account.dart';
@@ -25,6 +27,7 @@ class _AccountViewState extends ConsumerState<AccountView> {
     _baseUrlController = TextEditingController(text: account.baseUrl);
     _emailController = TextEditingController(text: account.email);
     _passwordController = TextEditingController();
+    unawaited(ref.read(panelAccountProvider.notifier).syncBaseUrl());
   }
 
   @override
@@ -150,6 +153,16 @@ class _AccountViewState extends ConsumerState<AccountView> {
   @override
   Widget build(BuildContext context) {
     final account = ref.watch(panelAccountProvider);
+    // A discovered address lands after initState, so fill the field unless the
+    // user has already typed one.
+    ref.listen(panelAccountProvider.select((state) => state.baseUrl), (
+      previous,
+      next,
+    ) {
+      if (next.isNotEmpty && _baseUrlController.text.trim().isEmpty) {
+        _baseUrlController.text = next;
+      }
+    });
     return CommonScaffold(
       isLoading: account.isLoading,
       title: context.appLocalizations.account,

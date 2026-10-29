@@ -66,11 +66,12 @@ class BatteryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAw
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
-        methodChannel = MethodChannel(binding.binaryMessenger, "${Components.PACKAGE_NAME}/battery")
+        methodChannel =
+            MethodChannel(binding.binaryMessenger, "${Components.CHANNEL_PACKAGE}/battery")
         methodChannel.setMethodCallHandler(this)
         eventChannel = EventChannel(
             binding.binaryMessenger,
-            "${Components.PACKAGE_NAME}/battery/optimization",
+            "${Components.CHANNEL_PACKAGE}/battery/optimization",
         )
         eventChannel.setStreamHandler(this)
     }

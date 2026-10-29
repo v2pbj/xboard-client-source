@@ -141,7 +141,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
     private companion object {
-        val SERVICE_CHANNEL = "${Components.PACKAGE_NAME}/service"
-        val CORE_CHANNEL = "${Components.PACKAGE_NAME}/core"
+        val SERVICE_CHANNEL = "${Components.CHANNEL_PACKAGE}/service"
+        val CORE_CHANNEL = "${Components.CHANNEL_PACKAGE}/core"
     }
 }

@@ -53,7 +53,6 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     return generateSection(
       title: appLocalizations.settings,
       items: [
-        const _AccountItem(),
         const _LocaleItem(),
         const _ThemeItem(),
         const _BackupItem(),
@@ -77,6 +76,9 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       appSettingProvider.select((state) => state.developerMode),
     );
     final items = [
+      // Leads the page: the sign-in buttons on the dashboard and the profile
+      // list only exist while the profile list is empty.
+      generateSection(items: [const _AccountItem()]),
       Consumer(
         builder: (_, ref, _) {
           final state = ref.watch(moreToolsSelectorStateProvider);

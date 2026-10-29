@@ -19,8 +19,7 @@ const _emailKey = 'panel_account_email';
 const _loginPath = '/api/v1/passport/auth/login';
 const _subscribePath = '/api/v1/user/getSubscribe';
 
-/// The front page is the one address meant to outlive a panel rename, so the
-/// account page asks it where the panel lives right now.
+// The front page outlives a panel rename, so it publishes the panel address.
 const _endpointSeed = 'https://app.xycould.top';
 const _endpointPath = '/client-endpoint.json';
 const _discoveredBaseUrlKey = 'panel_account_discovered_base_url';
@@ -191,8 +190,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
     }
   }
 
-  /// Follows the panel when it moves. A base URL the user typed is left alone:
-  /// only an empty one, or the one this method wrote last time, is replaced.
+  /// Only an empty base URL, or the one this method wrote last, is replaced.
   Future<void> syncBaseUrl() async {
     final preferences = await SharedPreferences.getInstance();
     final discovered = preferences.getString(_discoveredBaseUrlKey) ?? '';
@@ -211,8 +209,6 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
         '${_dataOf(response.data)['panel_base_url'] ?? ''}',
       );
     } on DioException {
-      // An unreachable front page leaves the stored address in place; the form
-      // still accepts a hand-typed one.
       return;
     }
     final uri = Uri.tryParse(candidate);

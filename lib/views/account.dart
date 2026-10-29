@@ -153,8 +153,6 @@ class _AccountViewState extends ConsumerState<AccountView> {
   @override
   Widget build(BuildContext context) {
     final account = ref.watch(panelAccountProvider);
-    // A discovered address lands after initState, so fill the field unless the
-    // user has already typed one.
     ref.listen(panelAccountProvider.select((state) => state.baseUrl), (
       previous,
       next,

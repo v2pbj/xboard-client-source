@@ -16,16 +16,15 @@ void main() {
     final components = File(
       'android/common/src/main/java/com/follow/clash/common/Components.kt',
     ).readAsStringSync();
-    final channelPackage = RegExp(r'const val CHANNEL_PACKAGE = "([^"]+)"')
-        .firstMatch(components)!
-        .group(1);
+    final channelPackage = RegExp(
+      r'const val CHANNEL_PACKAGE = "([^"]+)"',
+    ).firstMatch(components)!.group(1);
 
     expect(channelPackage, packageName);
 
-    final plugins = Directory('android/app/src/main/kotlin/com/follow/clash/plugins')
-        .listSync()
-        .whereType<File>()
-        .where((file) => file.path.endsWith('.kt'));
+    final plugins = Directory(
+      'android/app/src/main/kotlin/com/follow/clash/plugins',
+    ).listSync().whereType<File>().where((file) => file.path.endsWith('.kt'));
 
     expect(plugins, isNotEmpty);
     for (final plugin in plugins) {

@@ -11,6 +11,7 @@ import 'package:material_ui/material_ui.dart';
 
 const appName = 'Bear Booster';
 const appNameZh = String.fromEnvironment('BRAND_NAME_ZH', defaultValue: '白熊加速');
+const appDisplayName = '$appName · $appNameZh';
 
 /// Display names may carry spaces; a path, a device name and a user agent may not.
 const appSlug = 'BearBooster';

@@ -128,6 +128,7 @@ class _CoreStatusButtonState extends ConsumerState<CoreStatusButton> {
                 key: ValueKey(coreStatus),
                 style: style,
                 onPressed: _handleConnection,
+                tooltip: appLocalizations.coreStatus,
                 icon: icon,
               )
             : FilledButton.icon(

@@ -38,6 +38,27 @@ void main() {
       });
     });
 
+    test('carries the build tag when the packer sets one', () {
+      expect(
+        setup.createBuildEnvironment(
+          'dev',
+          panelBaseUrl: 'https://panel.test',
+          buildTag: '0.9.2-t13',
+        ),
+        {
+          'APP_ENV': 'dev',
+          'PANEL_BASE_URL': 'https://panel.test',
+          'XB_BUILD': '0.9.2-t13',
+        },
+      );
+    });
+
+    test('omits the build tag when the packer sets none', () {
+      expect(setup.createBuildEnvironment('dev', buildTag: ''), {
+        'APP_ENV': 'dev',
+      });
+    });
+
     test('omits verbose from flutter build args by default', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',

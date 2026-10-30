@@ -65,6 +65,9 @@ env:
   # address already filled in. Without it the field starts empty and every user
   # has to type the address once before the first login.
   PANEL_BASE_URL: https://app-t.xycould.top
+  # Also written into env.json: the client compares this build with the one the
+  # front page announces, and every version keeps the same 0.9.2 number.
+  XB_BUILD: ${{ inputs.release_tag }}
 
 jobs:
   android:

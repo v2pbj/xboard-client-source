@@ -124,11 +124,17 @@ List<String> createFlutterBuildArgs({
   return flutterBuildArgs;
 }
 
-Map<String, String> createBuildEnvironment(String env, {String? panelBaseUrl}) {
+Map<String, String> createBuildEnvironment(
+  String env, {
+  String? panelBaseUrl,
+  String? buildTag,
+}) {
   final baseUrl = panelBaseUrl ?? Platform.environment['PANEL_BASE_URL'];
+  final tag = buildTag ?? Platform.environment['XB_BUILD'];
   return {
     'APP_ENV': env,
     if (baseUrl != null && baseUrl.isNotEmpty) 'PANEL_BASE_URL': baseUrl,
+    if (tag != null && tag.isNotEmpty) 'XB_BUILD': tag,
   };
 }
 

@@ -22,20 +22,27 @@ void main() {
     });
 
     test('Flutter build environment does not depend on Core SHA256', () {
-      expect(setup.createBuildEnvironment('dev'), {'APP_ENV': 'dev'});
+      expect(setup.createBuildEnvironment('dev', buildTag: ''), {
+        'APP_ENV': 'dev',
+      });
     });
 
     test('carries a panel base url into the build environment', () {
       expect(
-        setup.createBuildEnvironment('dev', panelBaseUrl: 'https://panel.test'),
+        setup.createBuildEnvironment(
+          'dev',
+          panelBaseUrl: 'https://panel.test',
+          buildTag: '',
+        ),
         {'APP_ENV': 'dev', 'PANEL_BASE_URL': 'https://panel.test'},
       );
     });
 
     test('omits the panel base url when the build supplies none', () {
-      expect(setup.createBuildEnvironment('dev', panelBaseUrl: ''), {
-        'APP_ENV': 'dev',
-      });
+      expect(
+        setup.createBuildEnvironment('dev', panelBaseUrl: '', buildTag: ''),
+        {'APP_ENV': 'dev'},
+      );
     });
 
     test('carries the build tag when the packer sets one', () {

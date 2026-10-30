@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/providers/panel_account.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -62,7 +63,16 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       backgroundColor: DashboardColors.of(context).page,
       title: editing
           ? appLocalizations.editDashboard
-          : appLocalizations.dashboard,
+          : brandedPageTitle(
+              label: appLocalizations.dashboard,
+              brandEn: ref.watch(
+                panelAccountProvider.select((state) => state.brandEn),
+              ),
+              brandZh: ref.watch(
+                panelAccountProvider.select((state) => state.brandZh),
+              ),
+              locale: Localizations.localeOf(context),
+            ),
       actions: [if (!editing && coreLib == null) const CoreStatusButton()],
       confirmationAction: editing
           ? IconButtonData(

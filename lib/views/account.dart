@@ -7,6 +7,7 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountView extends ConsumerStatefulWidget {
   const AccountView({super.key});
@@ -69,6 +70,16 @@ class _AccountViewState extends ConsumerState<AccountView> {
     }, context.appLocalizations.accountSubscriptionUpdated);
   }
 
+  Future<void> _openRenew() async {
+    final renewUrl = ref.read(panelAccountProvider).renewUrl;
+    if (renewUrl.isEmpty) return;
+    await launchUrl(Uri.parse(renewUrl), mode: LaunchMode.externalApplication);
+  }
+
+  String _renewLabel() => Localizations.localeOf(context).languageCode == 'zh'
+      ? '立即续费'
+      : 'Renew now';
+
   Future<void> _logout() {
     return _run(
       () => ref.read(panelAccountProvider.notifier).logout(),
@@ -128,6 +139,10 @@ class _AccountViewState extends ConsumerState<AccountView> {
             subtitle: Text(account.planName.isEmpty ? '—' : account.planName),
           ),
           ListItem(
+            title: Text(appLocalizations.panelBaseUrl),
+            subtitle: Text(account.baseUrl),
+          ),
+          ListItem(
             title: Text(appLocalizations.expireTime),
             subtitle: Text(_formatTime(account.expiredAt)),
           ),
@@ -141,7 +156,9 @@ class _AccountViewState extends ConsumerState<AccountView> {
         ],
       ),
       const SizedBox(height: 16),
-      FilledButton(
+      FilledButton(onPressed: _openRenew, child: Text(_renewLabel())),
+      const SizedBox(height: 8),
+      OutlinedButton(
         onPressed: _updateSubscription,
         child: Text(appLocalizations.updateSubscription),
       ),

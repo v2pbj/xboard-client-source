@@ -15,9 +15,12 @@ const _panelBaseUrlDefine = String.fromEnvironment('PANEL_BASE_URL');
 const _tokenKey = 'panel_account_token';
 const _baseUrlKey = 'panel_account_base_url';
 const _emailKey = 'panel_account_email';
+const _brandZhKey = 'panel_account_brand_zh';
+const _brandEnKey = 'panel_account_brand_en';
 
 const _loginPath = '/api/v1/passport/auth/login';
 const _subscribePath = '/api/v1/user/getSubscribe';
+const _renewPath = '/#/plan';
 
 // The front page outlives a panel rename, so it publishes the panel address.
 const _endpointSeed = 'https://app.xycould.top';
@@ -28,6 +31,8 @@ const _discoveredBaseUrlKey = 'panel_account_discovered_base_url';
 class PanelAccountState {
   const PanelAccountState({
     this.baseUrl = _panelBaseUrlDefine,
+    this.brandZh = appNameZh,
+    this.brandEn = appName,
     this.token = '',
     this.email = '',
     this.subscribeUrl = '',
@@ -40,6 +45,8 @@ class PanelAccountState {
   });
 
   final String baseUrl;
+  final String brandZh;
+  final String brandEn;
   final String token;
   final String email;
   final String subscribeUrl;
@@ -54,8 +61,12 @@ class PanelAccountState {
 
   int get used => upload + download;
 
+  String get renewUrl => baseUrl.isEmpty ? '' : '$baseUrl$_renewPath';
+
   PanelAccountState copyWith({
     String? baseUrl,
+    String? brandZh,
+    String? brandEn,
     String? token,
     String? email,
     String? subscribeUrl,
@@ -68,6 +79,8 @@ class PanelAccountState {
   }) {
     return PanelAccountState(
       baseUrl: baseUrl ?? this.baseUrl,
+      brandZh: brandZh ?? this.brandZh,
+      brandEn: brandEn ?? this.brandEn,
       token: token ?? this.token,
       email: email ?? this.email,
       subscribeUrl: subscribeUrl ?? this.subscribeUrl,
@@ -112,7 +125,13 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
     final token = preferences.getString(_tokenKey) ?? '';
     final baseUrl = preferences.getString(_baseUrlKey) ?? _panelBaseUrlDefine;
     final email = preferences.getString(_emailKey) ?? '';
-    state = state.copyWith(baseUrl: baseUrl, token: token, email: email);
+    state = state.copyWith(
+      baseUrl: baseUrl,
+      token: token,
+      email: email,
+      brandZh: preferences.getString(_brandZhKey) ?? appNameZh,
+      brandEn: preferences.getString(_brandEnKey) ?? appName,
+    );
     if (token.isEmpty) return;
     try {
       await refresh();
@@ -190,13 +209,15 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
     }
   }
 
-  /// Only an empty base URL, or the one this method wrote last, is replaced.
+  /// The front page carries both the panel address and the brand, so a panel
+  /// that moves or is renamed is followed without a new build. Only an empty
+  /// base URL, or the one this method wrote last, is replaced.
   Future<void> syncBaseUrl() async {
     final preferences = await SharedPreferences.getInstance();
     final discovered = preferences.getString(_discoveredBaseUrlKey) ?? '';
     final current = _normalizeBaseUrl(state.baseUrl);
-    if (current.isNotEmpty && current != discovered) return;
-    String candidate;
+    final mayReplaceUrl = current.isEmpty || current == discovered;
+    final dynamic body;
     try {
       final response = await _dio.get<dynamic>(
         '$_endpointSeed$_endpointPath',
@@ -205,12 +226,28 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
           receiveTimeout: const Duration(seconds: 8),
         ),
       );
-      candidate = _normalizeBaseUrl(
-        '${_dataOf(response.data)['panel_base_url'] ?? ''}',
-      );
+      body = response.data;
     } on DioException {
       return;
     }
+    if (!ref.mounted) return;
+    final data = _dataOf(body);
+    var brandZh = state.brandZh;
+    var brandEn = state.brandEn;
+    final brand = data['brand'];
+    if (brand is Map) {
+      final zh = '${brand['zh'] ?? ''}'.trim();
+      final en = '${brand['en'] ?? ''}'.trim();
+      if (zh.isNotEmpty) brandZh = zh;
+      if (en.isNotEmpty) brandEn = en;
+    }
+    if (brandZh != state.brandZh || brandEn != state.brandEn) {
+      state = state.copyWith(brandZh: brandZh, brandEn: brandEn);
+      await preferences.setString(_brandZhKey, brandZh);
+      await preferences.setString(_brandEnKey, brandEn);
+    }
+    if (!mayReplaceUrl) return;
+    final candidate = _normalizeBaseUrl('${data['panel_base_url'] ?? ''}');
     final uri = Uri.tryParse(candidate);
     final isUsable =
         uri != null &&

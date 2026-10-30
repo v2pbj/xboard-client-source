@@ -14,6 +14,7 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/ui.dart';
+import 'package:fl_clash/widgets/brand_splash.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -173,13 +174,13 @@ class ApplicationState extends ConsumerState<Application> {
                 child: RemoteFocusAdapter(
                   enabled: system.isTV,
                   floatingKeyboard: app?.floatingKeyboard,
-                  child: child!,
+                  child: BrandSplash(child: child!),
                 ),
               ),
             );
           },
           scrollBehavior: const BaseScrollBehavior(),
-          title: appName,
+          title: '$appName · $appNameZh',
           locale: getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           themeMode: themeProps.themeMode,

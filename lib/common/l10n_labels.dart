@@ -124,3 +124,15 @@ extension LocaleL10n on Locale {
     };
   }
 }
+
+String brandedPageTitle({
+  required String label,
+  required String brandEn,
+  required String brandZh,
+  required Locale locale,
+}) {
+  final isChinese = locale.languageCode == 'zh';
+  final brand = isChinese ? brandZh : brandEn;
+  if (brand.isEmpty) return label;
+  return isChinese ? '$brand$label' : '$brand $label';
+}

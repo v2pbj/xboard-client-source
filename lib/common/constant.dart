@@ -13,6 +13,10 @@ const appName = 'Bear Booster';
 const appNameZh = String.fromEnvironment('BRAND_NAME_ZH', defaultValue: '白熊加速');
 const appDisplayName = '$appName · $appNameZh';
 
+/// The build this binary was packed as, e.g. `0.9.2-t13`. Every version keeps
+/// the same semantic number, so an update check has to compare the tag.
+const xbBuildTag = String.fromEnvironment('XB_BUILD', defaultValue: '0.9.2');
+
 /// Display names may carry spaces; a path, a device name and a user agent may not.
 const appSlug = 'BearBooster';
 const appHelperService = 'FlClashHelperService';

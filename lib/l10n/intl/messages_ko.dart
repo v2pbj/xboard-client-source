@@ -1122,6 +1122,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "password": MessageLookupByLibrary.simpleMessage("비밀번호"),
     "paste": MessageLookupByLibrary.simpleMessage("붙여넣기"),
     "peers": MessageLookupByLibrary.simpleMessage("피어"),
+    "permanentHome": MessageLookupByLibrary.simpleMessage("홈페이지"),
     "pickFromAlbum": MessageLookupByLibrary.simpleMessage("앨범에서 선택"),
     "pinWindow": MessageLookupByLibrary.simpleMessage("창 고정"),
     "plan": MessageLookupByLibrary.simpleMessage("요금제"),

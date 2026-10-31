@@ -139,6 +139,7 @@
   "accountLogin": "Sign in to panel account",
   "panelBaseUrl": "Panel address",
   "email": "Email",
+  "permanentHome": "Home page",
   "plan": "Plan",
   "myAccount": "My account",
   "usedOfTotal": "Used / total",

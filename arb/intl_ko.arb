@@ -139,6 +139,7 @@
   "accountLogin": "패널 계정 로그인",
   "panelBaseUrl": "패널 주소",
   "email": "이메일",
+  "permanentHome": "홈페이지",
   "plan": "요금제",
   "myAccount": "내 계정",
   "usedOfTotal": "사용량 / 총량",

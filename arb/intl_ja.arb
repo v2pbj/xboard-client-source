@@ -139,6 +139,7 @@
   "accountLogin": "パネルアカウントにログイン",
   "panelBaseUrl": "パネルのアドレス",
   "email": "メールアドレス",
+  "permanentHome": "ホームページ",
   "plan": "プラン",
   "myAccount": "マイアカウント",
   "usedOfTotal": "使用量 / 総量",

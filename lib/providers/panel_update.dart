@@ -8,20 +8,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// The front page is the one address that survives a panel move, so it also
 /// announces which build is current. Nothing here talks to GitHub: a white
 /// label build must never point its users at the upstream project.
-const _endpointSeed = 'https://app.xycould.top';
+///
+/// The direct entrance is tried first because the proxied one is the address
+/// that goes quiet for users on mainland networks.
+const _endpointSeeds = ['https://f.xycould.top', 'https://app.xycould.top'];
 const _endpointPath = '/client-endpoint.json';
 
 @immutable
 class PanelUpdate {
-  const PanelUpdate({this.latestBuild = '', this.downloadUrl = ''});
+  const PanelUpdate({
+    this.latestBuild = '',
+    this.downloadUrl = '',
+    this.homeUrl = '',
+  });
 
   final String latestBuild;
   final String downloadUrl;
+
+  /// The front page of the host that answered, or the one that front page
+  /// names, so the account view can always show users a way back.
+  final String homeUrl;
 
   bool get hasUpdate =>
       latestBuild.isNotEmpty &&
       downloadUrl.isNotEmpty &&
       _isNewer(latestBuild, xbBuildTag);
+}
+
+/// A front page fetched from the direct entrance must not send the download
+/// back through the proxied one, so an address announced on a sibling front
+/// page host is rewritten to the host that actually answered.
+String alignDownloadHost(String url, String answered) {
+  final announced = Uri.tryParse(url);
+  final base = Uri.tryParse(answered);
+  if (announced == null || base == null || announced.host.isEmpty) return url;
+  if (!_endpointSeeds.any((seed) => seed.endsWith('//${announced.host}'))) {
+    return url;
+  }
+  final query = announced.query.isEmpty ? null : announced.query;
+  return base.replace(path: announced.path, query: query).toString();
 }
 
 /// Every version keeps the `0.9.2` number and only the tag suffix moves, so the
@@ -48,8 +73,8 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
           dio ??
           Dio(
             BaseOptions(
-              connectTimeout: const Duration(seconds: 8),
-              receiveTimeout: const Duration(seconds: 8),
+              connectTimeout: const Duration(seconds: 6),
+              receiveTimeout: const Duration(seconds: 6),
             ),
           );
 
@@ -62,23 +87,41 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
   }
 
   Future<void> refresh() async {
-    final dynamic body;
-    try {
-      final response = await _dio.get<dynamic>(
-        '$_endpointSeed$_endpointPath',
-        options: Options(responseType: ResponseType.json),
-      );
-      body = response.data;
-    } on DioException {
+    for (final seed in _endpointSeeds) {
+      final dynamic body;
+      try {
+        final response = await _dio.get<dynamic>(
+          '$seed$_endpointPath',
+          options: Options(responseType: ResponseType.json),
+        );
+        body = response.data;
+      } on DioException {
+        continue;
+      }
+      if (!ref.mounted) return;
+      _apply(body, seed);
       return;
     }
-    if (!ref.mounted) return;
+  }
+
+  void _apply(dynamic body, String answered) {
     final data = body is Map ? body : const {};
     final latestBuild = '${data['latest_build'] ?? ''}'.trim();
-    final downloadUrl = '${data['download_url'] ?? ''}'.trim();
-    if (latestBuild == state.latestBuild && downloadUrl == state.downloadUrl) {
+    final downloadUrl = alignDownloadHost(
+      '${data['download_url'] ?? ''}'.trim(),
+      answered,
+    );
+    final namedHome = '${data['home_url'] ?? ''}'.trim();
+    final homeUrl = namedHome.isNotEmpty ? namedHome : '$answered/';
+    if (latestBuild == state.latestBuild &&
+        downloadUrl == state.downloadUrl &&
+        homeUrl == state.homeUrl) {
       return;
     }
-    state = PanelUpdate(latestBuild: latestBuild, downloadUrl: downloadUrl);
+    state = PanelUpdate(
+      latestBuild: latestBuild,
+      downloadUrl: downloadUrl,
+      homeUrl: homeUrl,
+    );
   }
 }

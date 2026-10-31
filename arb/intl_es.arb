@@ -139,6 +139,7 @@
   "accountLogin": "Iniciar sesión en el panel",
   "panelBaseUrl": "Dirección del panel",
   "email": "Correo electrónico",
+  "permanentHome": "Página de inicio",
   "plan": "Plan",
   "myAccount": "Mi cuenta",
   "usedOfTotal": "Usado / total",

@@ -1427,6 +1427,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "password": MessageLookupByLibrary.simpleMessage("Contraseña"),
     "paste": MessageLookupByLibrary.simpleMessage("Pegar"),
     "peers": MessageLookupByLibrary.simpleMessage("Pares"),
+    "permanentHome": MessageLookupByLibrary.simpleMessage("Página de inicio"),
     "pickFromAlbum": MessageLookupByLibrary.simpleMessage("Elegir del álbum"),
     "pinWindow": MessageLookupByLibrary.simpleMessage("Fijar ventana"),
     "plan": MessageLookupByLibrary.simpleMessage("Plan"),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/panel_account.dart';
+import 'package:fl_clash/providers/panel_update.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -142,6 +143,15 @@ class _AccountViewState extends ConsumerState<AccountView> {
             title: Text(appLocalizations.panelBaseUrl),
             subtitle: Text(account.baseUrl),
           ),
+          if (ref.watch(panelUpdateProvider).homeUrl.isNotEmpty)
+            ListItem(
+              title: Text(appLocalizations.permanentHome),
+              subtitle: Text(ref.watch(panelUpdateProvider).homeUrl),
+              onTap: () => launchUrl(
+                Uri.parse(ref.read(panelUpdateProvider).homeUrl),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
           ListItem(
             title: Text(appLocalizations.expireTime),
             subtitle: Text(_formatTime(account.expiredAt)),

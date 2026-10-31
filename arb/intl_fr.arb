@@ -139,6 +139,7 @@
   "accountLogin": "Connexion au panneau",
   "panelBaseUrl": "Adresse du panneau",
   "email": "E-mail",
+  "permanentHome": "Page d'accueil",
   "plan": "Forfait",
   "myAccount": "Mon compte",
   "usedOfTotal": "Utilisé / total",

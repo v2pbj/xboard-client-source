@@ -139,6 +139,7 @@
   "accountLogin": "登录面板账号",
   "panelBaseUrl": "面板地址",
   "email": "邮箱",
+  "permanentHome": "永久主页",
   "plan": "套餐",
   "myAccount": "我的账号",
   "usedOfTotal": "已用 / 总量",

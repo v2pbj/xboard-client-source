@@ -1030,6 +1030,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "password": MessageLookupByLibrary.simpleMessage("密码"),
     "paste": MessageLookupByLibrary.simpleMessage("粘贴"),
     "peers": MessageLookupByLibrary.simpleMessage("初始节点"),
+    "permanentHome": MessageLookupByLibrary.simpleMessage("永久主页"),
     "pickFromAlbum": MessageLookupByLibrary.simpleMessage("从相册选择"),
     "pinWindow": MessageLookupByLibrary.simpleMessage("窗口置顶"),
     "plan": MessageLookupByLibrary.simpleMessage("套餐"),

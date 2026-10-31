@@ -1106,6 +1106,11 @@ class AppLocalizations {
     return Intl.message('Email', name: 'email', desc: '', args: []);
   }
 
+  /// `Home page`
+  String get permanentHome {
+    return Intl.message('Home page', name: 'permanentHome', desc: '', args: []);
+  }
+
   /// `Plan`
   String get plan {
     return Intl.message('Plan', name: 'plan', desc: '', args: []);

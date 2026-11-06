@@ -15,12 +15,16 @@ final _directive = RegExp(
   multiLine: true,
 );
 
+/// [File.path] and [p.join] carry the host separator; every path compared below
+/// is a forward-slash path relative to the package root.
+String _relativePath(String path) => p.posix.joinAll(p.split(p.relative(path)));
+
 String _resolve(String uri, String from) {
   if (uri.startsWith('package:fl_clash/')) {
     return 'lib/${uri.substring('package:fl_clash/'.length)}';
   }
   if (uri.startsWith('dart:') || uri.startsWith('package:')) return uri;
-  return p.normalize(p.join(p.dirname(from), uri));
+  return p.posix.joinAll(p.split(p.normalize(p.join(p.dirname(from), uri))));
 }
 
 bool _isStateManagement(String uri) =>
@@ -67,7 +71,7 @@ void main() {
     final offenders = <String>[];
     for (final entity in directory.listSync(recursive: true)) {
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
-      final chain = _escape(p.relative(entity.path));
+      final chain = _escape(_relativePath(entity.path));
       if (chain != null) offenders.add(chain.join(' -> '));
     }
     expect(

@@ -19,7 +19,7 @@ const _forbidden = <String, String>{
 };
 
 bool _isGenerated(String path) {
-  return path.contains('/generated/') ||
+  return p.split(path).contains('generated') ||
       path.endsWith('.g.dart') ||
       path.endsWith('.freezed.dart');
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 /// The one button that carries its label on an enclosing [Tooltip] instead of
@@ -20,7 +21,7 @@ Iterable<File> _dartFilesIn(String root) sync* {
         entity.path.endsWith('.dart') &&
         !entity.path.endsWith('.g.dart') &&
         !entity.path.endsWith('.freezed.dart') &&
-        !entity.path.contains('/generated/')) {
+        !entity.uri.pathSegments.contains('generated')) {
       yield entity;
     }
   }
@@ -43,7 +44,9 @@ void main() {
 
     for (final file in _dartFilesIn('lib')) {
       final source = file.readAsStringSync();
-      if (file.path == _wrappedInTooltip) continue;
+      if (p.split(p.relative(file.path)).join('/') == _wrappedInTooltip) {
+        continue;
+      }
 
       for (final match in _iconButton.allMatches(source)) {
         final arguments = _arguments(source, match.end);

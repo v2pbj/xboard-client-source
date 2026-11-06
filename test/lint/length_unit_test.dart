@@ -13,7 +13,7 @@ void main() {
         if (entity is! File ||
             !entity.path.endsWith('.dart') ||
             entity.path.endsWith('.g.dart') ||
-            entity.path.contains('/generated/')) {
+            entity.uri.pathSegments.contains('generated')) {
           continue;
         }
         final lines = entity.readAsLinesSync();

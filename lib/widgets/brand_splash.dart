@@ -56,7 +56,6 @@ class _BrandSplashBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = context.colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     return AbsorbPointer(
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -72,17 +71,16 @@ class _BrandSplashBody extends StatelessWidget {
             children: [
               Text(
                 appName,
-                style: textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: scheme.primary,
-                ),
+                style: AppTextStyle.title1
+                    .of(context, emphasized: true)
+                    .copyWith(color: scheme.primary),
               ),
               const SizedBox(height: 6),
               Text(
                 appNameZh,
-                style: textTheme.titleMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
+                style: AppTextStyle.headline
+                    .of(context)
+                    .copyWith(color: scheme.onSurfaceVariant),
               ),
               const SizedBox(height: 30),
               const SizedBox(

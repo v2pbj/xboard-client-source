@@ -13,7 +13,7 @@ final _fontSize = RegExp(r'\bfontSize:');
 final _fontWeight = RegExp(r'\bfontWeight:');
 
 bool _isGenerated(String path) =>
-    path.contains('/generated/') ||
+    p.split(path).contains('generated') ||
     path.endsWith('.g.dart') ||
     path.startsWith('lib/l10n/');
 
@@ -22,7 +22,7 @@ void main() {
     final offenders = <String>[];
 
     for (final entity in Directory('lib').listSync(recursive: true)) {
-      final path = p.relative(entity.path);
+      final path = p.split(p.relative(entity.path)).join('/');
       if (entity is! File || !path.endsWith('.dart') || _isGenerated(path)) {
         continue;
       }

@@ -47,7 +47,9 @@ void main() {
     for (final entity in Directory(_libDir).listSync(recursive: true)) {
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
       final path = entity.path;
-      if (path.contains('/generated/') || path.contains('/l10n/')) continue;
+      // File.path carries the host separator, so match on uri segments.
+      final segments = entity.uri.pathSegments;
+      if (segments.contains('generated') || segments.contains('l10n')) continue;
       if (entity.readAsStringSync().contains('Intl.message(')) {
         offenders.add(path);
       }

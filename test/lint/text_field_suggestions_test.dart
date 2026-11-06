@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 final _passwordInputType = RegExp(
@@ -15,8 +16,8 @@ void main() {
     for (final entity in Directory('lib').listSync(recursive: true)) {
       if (entity is! File ||
           !entity.path.endsWith('.dart') ||
-          entity.path.contains('/generated/') ||
-          _secretFields.contains(entity.path)) {
+          entity.uri.pathSegments.contains('generated') ||
+          _secretFields.contains(p.split(p.relative(entity.path)).join('/'))) {
         continue;
       }
       final lines = entity.readAsLinesSync();

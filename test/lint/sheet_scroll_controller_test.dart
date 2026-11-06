@@ -27,10 +27,10 @@ void main() {
     for (final entity in Directory('lib').listSync(recursive: true)) {
       if (entity is! File ||
           !entity.path.endsWith('.dart') ||
-          entity.path.contains('/generated/')) {
+          entity.uri.pathSegments.contains('generated')) {
         continue;
       }
-      final path = p.relative(entity.path);
+      final path = p.split(p.relative(entity.path)).join('/');
       if (_allowed.contains(path)) {
         continue;
       }

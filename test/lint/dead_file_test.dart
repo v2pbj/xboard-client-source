@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 const _entryPoints = ['lib/main.dart'];
@@ -14,6 +15,10 @@ final _declaration = RegExp(
   multiLine: true,
 );
 
+/// [File.path] carries the host separator; every path compared below is a
+/// forward-slash path relative to the package root.
+String _relative(File file) => p.split(p.relative(file.path)).join('/');
+
 Iterable<File> _dartFiles({required bool includeGenerated}) sync* {
   for (final root in ['lib', 'test', 'tool', 'plugins']) {
     final directory = Directory(root);
@@ -25,7 +30,7 @@ Iterable<File> _dartFiles({required bool includeGenerated}) sync* {
       final generated =
           entity.path.endsWith('.g.dart') ||
           entity.path.endsWith('.freezed.dart') ||
-          entity.path.contains('/generated/');
+          entity.uri.pathSegments.contains('generated');
       if (generated && !includeGenerated) continue;
       yield entity;
     }
@@ -49,11 +54,11 @@ void main() {
     // notifier is reached through the provider its annotation generates.
     final consumers = {
       for (final file in _dartFiles(includeGenerated: true))
-        file.path: file.readAsStringSync(),
+        _relative(file): file.readAsStringSync(),
     };
     final sources = {
       for (final file in _dartFiles(includeGenerated: false))
-        file.path: consumers[file.path]!,
+        _relative(file): consumers[_relative(file)]!,
     };
     final barrels = {
       for (final MapEntry(key: path, value: source) in sources.entries)

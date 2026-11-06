@@ -42,7 +42,7 @@ final _lateDeclaration = RegExp(
 );
 
 bool _isGenerated(String path) {
-  return path.contains('/generated/') ||
+  return p.split(path).contains('generated') ||
       path.endsWith('.g.dart') ||
       path.endsWith('.freezed.dart');
 }
@@ -56,7 +56,7 @@ void main() {
       if (entity is! File || !entity.path.endsWith('.dart')) {
         continue;
       }
-      final relative = p.relative(entity.path);
+      final relative = p.split(p.relative(entity.path)).join('/');
       if (_isGenerated(relative)) {
         continue;
       }

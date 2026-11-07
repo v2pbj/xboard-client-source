@@ -11,6 +11,14 @@
 
 | 版本 | 标签 | 应用源码 commit | 内核源码 commit | 构建依赖 |
 | --- | --- | --- | --- | --- |
+| 0.9.2（T14：默认新安装使用直连入口） | `v0.9.2-t14` | `624abbcb4b441217187385e1615ebf461ede54b4` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
+| 0.9.2（T13：构建脚本注入正式版本号） | `v0.9.2-t13` | `0d4d558a0d77f3c1890f3f8e4e9ae32b874b06d2` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
+| 0.9.2（T12：无障碍与图标命名修正） | `v0.9.2-t12` | `b89062a2f29cf49f2e679ee9f28a689f629875a7` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
+| 0.9.2（T11：账号页展示长期主页地址） | `v0.9.2-t11` | `7fc0411c80306a1e8263a909fbb1516db68d0824` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
+| 0.9.2（T10：彻底移除首次启动免责横幅） | `v0.9.2-t10` | `4f1ce25d75c2574bd73009f54231491e1d434830` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
+| 0.9.2（T9：安装包与官网下载同字节） | `v0.9.2-t9` | `51e3210c7f0c20c407c541df5ad22c4a2651678f` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
+| 0.9.2（T8：CI 输出安装包清单注解） | `v0.9.2-t8` | `9ca290e7287a8c36bab9486039ddfcaf2643add5` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
+| 0.9.2（T7：首次发布安卓安装包） | `v0.9.2-t7` | `e504e2e84b90654bc105372e851c6ac61fc652ba` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
 | 0.9.2（T6：修正登录取订阅的模板类型，节点不再为空） | `v0.9.2-t6` | `e4a67ebf27af569170540d1e55ae5a6ad452dd6a` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T5：Windows 窗口标题与安装器品牌） | `v0.9.2-t5` | `bdf292293804172ce23c3600a9e981dd5dd871c3` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T4：安装包内置面板地址） | `v0.9.2-t4` | `28023bbf44a5d270cb6586dbc1b9f4fb0f277e1c` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
@@ -25,6 +33,22 @@
 
 | 版本 | 文件 | 大小 | SHA-256 |
 | --- | --- | --- | --- |
+| T14 | `bearbooster-0.9.2-t14-source.zip` | 22.2 MB | `3911A53AC2B1C8789DCDD838F4E6869872B71D32B05AB55CBCBB6581396987AF` |
+| T14 | `bearbooster-0.9.2-t14-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T13 | `bearbooster-0.9.2-t13-source.zip` | 22.2 MB | `6B8DF02F975CAC766AC120F6D4D6A15DB264BBD35051B84D0DDC7FD3FFC80EBB` |
+| T13 | `bearbooster-0.9.2-t13-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T12 | `bearbooster-0.9.2-t12-source.zip` | 22.2 MB | `115A5D4071BEBF8F45A79F775D8BD1F3DF18CCAB33E9ECA7E31707D6732F0127` |
+| T12 | `bearbooster-0.9.2-t12-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T11 | `bearbooster-0.9.2-t11-source.zip` | 22.2 MB | `EBCA2FB6A16F4440E261EA41B2EB693245D86D9388748EEA81607AB941920901` |
+| T11 | `bearbooster-0.9.2-t11-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T10 | `bearbooster-0.9.2-t10-source.zip` | 22.2 MB | `284861A61B050A2775E35778A65D73581D70A3E069B3E749368DE95E27161957` |
+| T10 | `bearbooster-0.9.2-t10-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T9 | `bearbooster-0.9.2-t9-source.zip` | 22.2 MB | `8B8CEF89CF4E50019E5DC66AF6B50F6B4BAA17E5BA2CD6328A1CF19F5312B356` |
+| T9 | `bearbooster-0.9.2-t9-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T8 | `bearbooster-0.9.2-t8-source.zip` | 22.2 MB | `152B23CA742821D55362101C3BF7F01708A07AEADE66C87118CEF3D5403FF17F` |
+| T8 | `bearbooster-0.9.2-t8-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
+| T7 | `bearbooster-0.9.2-t7-source.zip` | 22.2 MB | `61BA3A24DD9817D89839904C84A4FE6C04926FDA5E299492376E3CF2B2E96FDC` |
+| T7 | `bearbooster-0.9.2-t7-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T6 | `bearbooster-0.9.2-t6-source.zip` | 22.2 MB | `A037B5C42E1F329BB2C3265FA086FD7EF7E76EE7E3E6354FFD3C8B048EC109C5` |
 | T6 | `bearbooster-0.9.2-t6-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T5 | `bearbooster-0.9.2-t5-source.zip` | 22.2 MB | `29FA7DE77844CE1772EC8C28700E6BBAD8FBA90A3BC49DA7460CEF2F868FE6E8` |
@@ -40,6 +64,11 @@
 
 每个版本的 `-source.zip` 是应用本体（Flutter/Dart + Android/Windows 工程，含全部构建脚本与 CI 定义），
 `-core-source.zip` 是内核子模块在该 commit 上的源码。两者合起来即为对应源码（Corresponding Source）。
+
+**核验说明（2026-11-07）**：已对公开 Release 的 T7–T14 附件执行 ZIP 可读性、文件清单与逐文件字节核对。
+T7–T12、T14 的应用源码与上表标签的 Git 树一致，T7–T14 的内核源码与 `c5062921054902b25215a6a933e72ccd714c9bfa` 一致。
+T13 的公开应用 ZIP 仅 `test/setup_test.dart` 与其标签树存在测试调用差异，未改写发布附件；其余文件一致。
+源码 SHA-256 已同步至 `SHA256SUMS.txt`，用于核对下载文件。
 
 安装包自身的 SHA-256 见同版本 Release 里的 `SHA256SUMS.txt`。
 

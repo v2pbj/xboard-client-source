@@ -92,7 +92,7 @@ class ClientNoticeNotifier extends Notifier<ClientNotice> {
     final normalized = baseUrl.trim().replaceFirst(RegExp(r'/+$'), '');
     final base = Uri.tryParse(normalized);
     if (base == null ||
-        (base.scheme != 'https' && base.scheme != 'http') ||
+        base.scheme != 'https' ||
         base.host.isEmpty ||
         base.userInfo.isNotEmpty) {
       return;

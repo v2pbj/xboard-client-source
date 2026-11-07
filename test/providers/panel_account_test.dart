@@ -333,6 +333,42 @@ void main() {
     });
   });
 
+  group('syncBaseUrl', () {
+    test('does not adopt a plaintext panel address', () async {
+      SharedPreferences.setMockInitialValues({});
+      final adapter = _ScriptedAdapter(
+        (_) => _json({'panel_base_url': 'http://panel.example.com'}),
+      );
+      final container = containerWith(adapter);
+      await pumpEventQueue();
+
+      await container.read(panelAccountProvider.notifier).syncBaseUrl();
+
+      expect(container.read(panelAccountProvider).baseUrl, isEmpty);
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getString('panel_account_discovered_base_url'),
+        isNull,
+      );
+    });
+
+    test('adopts an HTTPS panel address', () async {
+      SharedPreferences.setMockInitialValues({});
+      final adapter = _ScriptedAdapter(
+        (_) => _json({'panel_base_url': 'https://new-panel.example.com'}),
+      );
+      final container = containerWith(adapter);
+      await pumpEventQueue();
+
+      await container.read(panelAccountProvider.notifier).syncBaseUrl();
+
+      expect(
+        container.read(panelAccountProvider).baseUrl,
+        'https://new-panel.example.com',
+      );
+    });
+  });
+
   group('refresh', () {
     Future<ProviderContainer> loggedIn(_ScriptedAdapter adapter) async {
       final container = containerWith(adapter);

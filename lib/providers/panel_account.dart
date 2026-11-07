@@ -295,8 +295,9 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
     final uri = Uri.tryParse(candidate);
     final isUsable =
         uri != null &&
-        (uri.scheme == 'https' || uri.scheme == 'http') &&
-        uri.host.isNotEmpty;
+        uri.scheme == 'https' &&
+        uri.host.isNotEmpty &&
+        uri.userInfo.isEmpty;
     if (!isUsable) return;
     await preferences.setString(_discoveredBaseUrlKey, candidate);
     if (!ref.mounted || candidate == current) return;

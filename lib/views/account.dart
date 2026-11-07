@@ -163,9 +163,7 @@ class _AccountViewState extends ConsumerState<AccountView> {
 
   List<Widget> _buildAccount(PanelAccountState account) {
     final appLocalizations = context.appLocalizations;
-    final notice = ref.watch(clientNoticeProvider);
     return [
-      if (notice.visible) ...[_noticeCard(notice), const SizedBox(height: 16)],
       const SizedBox(height: 8),
       generateSection(
         title: appLocalizations.myAccount,

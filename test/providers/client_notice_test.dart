@@ -93,6 +93,10 @@ void main() {
     expect(adapter.requests, isEmpty);
     await c
         .read(clientNoticeProvider.notifier)
+        .refresh('http://p.xycould.top/');
+    expect(adapter.requests, isEmpty);
+    await c
+        .read(clientNoticeProvider.notifier)
         .refresh('https://p.xycould.top/');
     expect(c.read(clientNoticeProvider).linkUrl, isEmpty);
     expect(c.read(clientNoticeProvider).visible, isTrue);

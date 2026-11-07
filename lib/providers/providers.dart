@@ -1,6 +1,7 @@
 export 'action.dart';
 export 'app.dart';
 export 'config.dart';
+export 'client_notice.dart';
 export 'core.dart';
 export 'database.dart';
 export 'on_demand.dart';

@@ -84,6 +84,8 @@ class CommonAction extends _$CommonAction {
 
   Future<bool> autoCheckUpdate() async {
     if (!ref.read(appSettingProvider).autoCheckUpdate) return false;
+    await ref.read(panelUpdateProvider.notifier).refresh();
+    if (!ref.mounted) return false;
     final update = ref.read(panelUpdateProvider);
     if (!update.hasUpdate) {
       return false;
@@ -158,12 +160,10 @@ class CommonAction extends _$CommonAction {
         confirmText: currentAppLocalizations.goDownload,
         cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
       );
-      if (res == true) {
-        unawaited(
-          launchUrl(
-            Uri.parse('https://github.com/$repository/releases/latest'),
-          ),
-        );
+      final downloadUrl = data['html_url'] as String? ?? '';
+      final uri = Uri.tryParse(downloadUrl);
+      if (res == true && uri != null && uri.scheme == 'https') {
+        unawaited(launchUrl(uri, mode: LaunchMode.externalApplication));
       } else if (!isUser && res == false) {
         ref
             .read(appSettingProvider.notifier)

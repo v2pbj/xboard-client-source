@@ -214,11 +214,19 @@ void main() {
       expect(config['sniffer']['sniff']['HTTP']['ports'], ['80', '443']);
       expect(
         config['proxy-providers']['remote']['path'],
-        startsWith('/profiles/providers/7/proxies/'),
+        startsWith(
+          normalize(
+            join('/profiles', 'providers', '7', 'proxies'),
+          ).replaceFirst(RegExp(r'^\\'), '/'),
+        ),
       );
       expect(
         config['rule-providers']['remote']['path'],
-        startsWith('/profiles/providers/7/rules/'),
+        startsWith(
+          normalize(
+            join('/profiles', 'providers', '7', 'rules'),
+          ).replaceFirst(RegExp(r'^\\'), '/'),
+        ),
       );
       expect(config['rules'], [
         'DOMAIN-SUFFIX,added.example,Original',

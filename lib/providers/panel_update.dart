@@ -49,19 +49,30 @@ String alignDownloadHost(String url, String answered) {
   return base.replace(path: announced.path, query: query).toString();
 }
 
-/// Every version keeps the `0.9.2` number and only the tag suffix moves, so the
-/// `-tN` counter decides when both sides carry one; otherwise fall back to the
-/// semantic comparison.
+/// The `-tN` suffix advances a fixed semantic version; an absent tag is T0.
 bool _isNewer(String latest, String current) {
-  if (latest == current) return false;
-  final left = _buildNumber(latest);
-  final right = _buildNumber(current);
-  if (left != null && right != null) return left > right;
-  return compareVersions(latest, current) > 0;
+  final valid = RegExp(r'^(\d+)\.(\d+)\.(\d+)(?:-t(\d+))?$');
+  final left = valid.firstMatch(latest);
+  final right = valid.firstMatch(current);
+  if (left == null || right == null) return false;
+  for (var i = 1; i <= 3; i++) {
+    final a = int.parse(left.group(i)!);
+    final b = int.parse(right.group(i)!);
+    if (a != b) return a > b;
+  }
+  return int.parse(left.group(4) ?? '0') > int.parse(right.group(4) ?? '0');
 }
 
-int? _buildNumber(String version) =>
-    int.tryParse(RegExp(r'-t(\d+)$').firstMatch(version)?.group(1) ?? '');
+String _safeHttpsUrl(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null ||
+      uri.scheme != 'https' ||
+      uri.host.isEmpty ||
+      uri.userInfo.isNotEmpty) {
+    return '';
+  }
+  return url;
+}
 
 final panelUpdateProvider = NotifierProvider<PanelUpdateNotifier, PanelUpdate>(
   PanelUpdateNotifier.new,
@@ -79,6 +90,7 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
           );
 
   final Dio _dio;
+  Future<void>? _refreshing;
 
   @override
   PanelUpdate build() {
@@ -86,7 +98,14 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
     return const PanelUpdate();
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh() {
+    if (_refreshing != null) return _refreshing!;
+    final refreshing = _refresh();
+    _refreshing = refreshing;
+    return refreshing.whenComplete(() => _refreshing = null);
+  }
+
+  Future<void> _refresh() async {
     for (final seed in _endpointSeeds) {
       final dynamic body;
       try {
@@ -107,11 +126,13 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
   void _apply(dynamic body, String answered) {
     final data = body is Map ? body : const {};
     final latestBuild = '${data['latest_build'] ?? ''}'.trim();
-    final downloadUrl = alignDownloadHost(
-      '${data['download_url'] ?? ''}'.trim(),
-      answered,
+    final downloadUrl = _safeHttpsUrl(
+      alignDownloadHost(
+        _safeHttpsUrl('${data['download_url'] ?? ''}'.trim()),
+        answered,
+      ),
     );
-    final namedHome = '${data['home_url'] ?? ''}'.trim();
+    final namedHome = _safeHttpsUrl('${data['home_url'] ?? ''}'.trim());
     final homeUrl = namedHome.isNotEmpty ? namedHome : '$answered/';
     if (latestBuild == state.latestBuild &&
         downloadUrl == state.downloadUrl &&

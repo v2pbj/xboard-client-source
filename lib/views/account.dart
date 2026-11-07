@@ -4,6 +4,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/panel_account.dart';
 import 'package:fl_clash/providers/panel_update.dart';
+import 'package:fl_clash/providers/client_notice.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +31,11 @@ class _AccountViewState extends ConsumerState<AccountView> {
     _emailController = TextEditingController(text: account.email);
     _passwordController = TextEditingController();
     unawaited(ref.read(panelAccountProvider.notifier).syncBaseUrl());
+    unawaited(_loadNotice(account.baseUrl));
+  }
+
+  Future<void> _loadNotice(String baseUrl) async {
+    await ref.read(clientNoticeProvider.notifier).refresh(baseUrl);
   }
 
   @override
@@ -60,6 +66,8 @@ class _AccountViewState extends ConsumerState<AccountView> {
         password: _passwordController.text,
       );
       await accountAction.importProfile(label: _emailController.text.trim());
+      await accountAction.syncBaseUrl();
+      await _loadNotice(ref.read(panelAccountProvider).baseUrl);
     }, context.appLocalizations.accountLoginSuccess);
   }
 
@@ -85,6 +93,28 @@ class _AccountViewState extends ConsumerState<AccountView> {
     return _run(
       () => ref.read(panelAccountProvider.notifier).logout(),
       context.appLocalizations.accountLoggedOut,
+    );
+  }
+
+  Widget _noticeCard(ClientNotice notice) {
+    return CommonCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
+        children: [
+          Text(notice.title, style: AppTextStyle.title3.of(context)),
+          if (notice.body.isNotEmpty) Text(notice.body),
+          if (notice.linkUrl.isNotEmpty)
+            TextButton(
+              onPressed: () => launchUrl(
+                Uri.parse(notice.linkUrl),
+                mode: LaunchMode.externalApplication,
+              ),
+              child: Text(notice.linkLabel),
+            ),
+        ],
+      ),
     );
   }
 
@@ -124,9 +154,18 @@ class _AccountViewState extends ConsumerState<AccountView> {
     ];
   }
 
+  String get _homeUrl {
+    final noticeHome = ref.watch(clientNoticeProvider).homeUrl;
+    return noticeHome.isNotEmpty
+        ? noticeHome
+        : ref.watch(panelUpdateProvider).homeUrl;
+  }
+
   List<Widget> _buildAccount(PanelAccountState account) {
     final appLocalizations = context.appLocalizations;
+    final notice = ref.watch(clientNoticeProvider);
     return [
+      if (notice.visible) ...[_noticeCard(notice), const SizedBox(height: 16)],
       const SizedBox(height: 8),
       generateSection(
         title: appLocalizations.myAccount,
@@ -143,12 +182,12 @@ class _AccountViewState extends ConsumerState<AccountView> {
             title: Text(appLocalizations.panelBaseUrl),
             subtitle: Text(account.baseUrl),
           ),
-          if (ref.watch(panelUpdateProvider).homeUrl.isNotEmpty)
+          if (_homeUrl.isNotEmpty)
             ListItem(
               title: Text(appLocalizations.permanentHome),
-              subtitle: Text(ref.watch(panelUpdateProvider).homeUrl),
+              subtitle: Text(_homeUrl),
               onTap: () => launchUrl(
-                Uri.parse(ref.read(panelUpdateProvider).homeUrl),
+                Uri.parse(_homeUrl),
                 mode: LaunchMode.externalApplication,
               ),
             ),
@@ -180,12 +219,16 @@ class _AccountViewState extends ConsumerState<AccountView> {
   @override
   Widget build(BuildContext context) {
     final account = ref.watch(panelAccountProvider);
+    final notice = ref.watch(clientNoticeProvider);
     ref.listen(panelAccountProvider.select((state) => state.baseUrl), (
       previous,
       next,
     ) {
       if (next.isNotEmpty && _baseUrlController.text.trim().isEmpty) {
         _baseUrlController.text = next;
+      }
+      if (next.isNotEmpty && next != previous) {
+        unawaited(_loadNotice(next));
       }
     });
     return CommonScaffold(
@@ -196,9 +239,13 @@ class _AccountViewState extends ConsumerState<AccountView> {
           top: context.contentTopPadding,
           bottom: 32 + context.bottomInset,
         ),
-        children: account.isLoggedIn
-            ? _buildAccount(account)
-            : _buildLoginForm(),
+        children: [
+          if (notice.visible) ...[
+            _noticeCard(notice),
+            const SizedBox(height: 16),
+          ],
+          ...account.isLoggedIn ? _buildAccount(account) : _buildLoginForm(),
+        ],
       ),
     );
   }

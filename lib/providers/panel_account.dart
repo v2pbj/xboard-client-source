@@ -23,7 +23,7 @@ const _subscribePath = '/api/v1/user/getSubscribe';
 const _renewPath = '/#/plan';
 
 // The front page outlives a panel rename, so it publishes the panel address.
-const _endpointSeed = 'https://app.xycould.top';
+const _endpointSeeds = ['https://f.xycould.top', 'https://app.xycould.top'];
 const _endpointPath = '/client-endpoint.json';
 const _discoveredBaseUrlKey = 'panel_account_discovered_base_url';
 
@@ -157,29 +157,61 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
       throw MessageException(currentAppLocalizations.panelBaseUrlRequired);
     }
     state = state.copyWith(isLoading: true);
-    try {
-      final response = await _dio.post<dynamic>(
-        '$base$_loginPath',
-        data: {'email': email.trim(), 'password': password},
-      );
-      final data = _dataOf(response.data);
-      final token = '${data['auth_data'] ?? data['token'] ?? ''}';
-      if (token.isEmpty) {
-        state = state.copyWith(isLoading: false);
-        throw MessageException(currentAppLocalizations.panelLoginNoToken);
+    final candidates = <String>[
+      base,
+      ...ref.read(clientNoticeProvider).panelUrls,
+    ];
+    final endpoints = <String>[];
+    for (final candidate in candidates) {
+      final normalized = _normalizeBaseUrl(candidate);
+      final uri = Uri.tryParse(normalized);
+      if (normalized.isNotEmpty &&
+          uri != null &&
+          uri.scheme == 'https' &&
+          uri.host.isNotEmpty &&
+          uri.userInfo.isNotEmpty == false &&
+          !endpoints.contains(normalized)) {
+        endpoints.add(normalized);
       }
-      state = state.copyWith(
-        baseUrl: base,
-        email: email.trim(),
-        token: token,
-        isLoading: false,
-      );
-      await _persist();
-      await refresh();
-    } on DioException catch (error) {
-      state = state.copyWith(isLoading: false);
-      throw MessageException(_messageOf(error));
     }
+    DioException? lastError;
+    for (final endpoint in endpoints) {
+      try {
+        final response = await _dio.post<dynamic>(
+          '$endpoint$_loginPath',
+          data: {'email': email.trim(), 'password': password},
+        );
+        final data = _dataOf(response.data);
+        final token = '${data['auth_data'] ?? data['token'] ?? ''}';
+        if (token.isEmpty) {
+          state = state.copyWith(isLoading: false);
+          throw MessageException(currentAppLocalizations.panelLoginNoToken);
+        }
+        if (!ref.mounted) return;
+        state = state.copyWith(
+          baseUrl: endpoint,
+          email: email.trim(),
+          token: token,
+          isLoading: false,
+        );
+        await _persist();
+        await refresh();
+        return;
+      } on DioException catch (error) {
+        lastError = error;
+        final status = error.response?.statusCode ?? 0;
+        if (status != 0 &&
+            status != 404 &&
+            status != 502 &&
+            status != 503 &&
+            status != 504) {
+          break;
+        }
+      }
+    }
+    state = state.copyWith(isLoading: false);
+    if (lastError != null) throw MessageException(_messageOf(lastError));
+    throw MessageException(currentAppLocalizations.panelBaseUrlRequired);
   }
 
   Future<void> refresh() async {
@@ -210,22 +242,34 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
   }
 
   /// The front page carries both the panel address and the brand, so a panel
-  /// that moves or is renamed is followed without a new build. Only an empty
-  /// base URL, or the one this method wrote last, is replaced.
+  /// that moves or is renamed is followed without a new build. Manual addresses
+  /// stay put, but the build-time entrance is canonical and may be moved by the
+  /// front page it advertises.
   Future<void> syncBaseUrl() async {
     final preferences = await SharedPreferences.getInstance();
     final discovered = preferences.getString(_discoveredBaseUrlKey) ?? '';
     final current = _normalizeBaseUrl(state.baseUrl);
-    final mayReplaceUrl = current.isEmpty || current == discovered;
+    final canonical = _normalizeBaseUrl(_panelBaseUrlDefine);
+    final mayReplaceUrl =
+        current.isEmpty || current == canonical || current == discovered;
     final dynamic body;
     try {
-      final response = await _dio.get<dynamic>(
-        '$_endpointSeed$_endpointPath',
-        options: Options(
-          responseType: ResponseType.json,
-          receiveTimeout: const Duration(seconds: 8),
-        ),
-      );
+      Response<dynamic>? response;
+      for (final seed in _endpointSeeds) {
+        try {
+          response = await _dio.get<dynamic>(
+            '$seed$_endpointPath',
+            options: Options(
+              responseType: ResponseType.json,
+              receiveTimeout: const Duration(seconds: 8),
+            ),
+          );
+          break;
+        } on DioException {
+          continue;
+        }
+      }
+      if (response == null) return;
       body = response.data;
     } on DioException {
       return;

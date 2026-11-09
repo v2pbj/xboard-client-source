@@ -61,6 +61,12 @@ void main() {
           'link_url': 'https://f.xycould.top/notice',
           'link_label': '详情',
           'home_url': 'https://f.xycould.top/',
+          'subscribe_mirrors': [
+            'https://a.example.com',
+            'https://b.example.com/',
+            'https://c.example.com/sub',
+            'http://d.example.com',
+          ],
         },
       }),
     );
@@ -73,6 +79,10 @@ void main() {
     expect(notice.title, '维护通知');
     expect(notice.body, '今晚升级');
     expect(notice.linkUrl, 'https://f.xycould.top/notice');
+    expect(notice.subscribeMirrors, [
+      'https://a.example.com',
+      'https://b.example.com',
+    ]);
     expect(adapter.requests.single.uri.path, '/api/v1/guest/client/notice');
     expect(adapter.requests.single.uri.host, 'p.xycould.top');
   });

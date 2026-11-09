@@ -65,9 +65,9 @@ class _AccountViewState extends ConsumerState<AccountView> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      await accountAction.importProfile(label: _emailController.text.trim());
       await accountAction.syncBaseUrl();
       await _loadNotice(ref.read(panelAccountProvider).baseUrl);
+      await accountAction.importProfile(label: _emailController.text.trim());
     }, context.appLocalizations.accountLoginSuccess);
   }
 
@@ -75,6 +75,7 @@ class _AccountViewState extends ConsumerState<AccountView> {
     return _run(() async {
       final accountAction = ref.read(panelAccountProvider.notifier);
       await accountAction.refresh();
+      await _loadNotice(ref.read(panelAccountProvider).baseUrl);
       await accountAction.importProfile();
     }, context.appLocalizations.accountSubscriptionUpdated);
   }

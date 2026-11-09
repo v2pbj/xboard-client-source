@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -24,7 +25,7 @@ const _subscribeUrl =
 class _ScriptedAdapter implements HttpClientAdapter {
   _ScriptedAdapter(this._handler);
 
-  final ResponseBody Function(RequestOptions options) _handler;
+  final FutureOr<ResponseBody> Function(RequestOptions options) _handler;
   final List<RequestOptions> requests = [];
 
   @override
@@ -107,6 +108,7 @@ void main() {
     List<Profile> profiles = const [],
     ProfilesAction Function()? profilesAction,
     List<String> noticeUrls = const [],
+    List<String> noticeMirrors = const [],
   }) {
     final container = ProviderContainer(
       overrides: [
@@ -115,7 +117,10 @@ void main() {
         ),
         profilesProvider.overrideWith(() => TestProfiles(profiles)),
         clientNoticeProvider.overrideWith(
-          () => ClientNoticeNotifier(initialPanelUrls: noticeUrls),
+          () => ClientNoticeNotifier(
+            initialPanelUrls: noticeUrls,
+            initialSubscribeMirrors: noticeMirrors,
+          ),
         ),
         if (profilesAction != null)
           profilesActionProvider.overrideWith(profilesAction),
@@ -651,6 +656,139 @@ void main() {
       expect(action.updated, isEmpty);
       expect(action.added.single.$1, '$_subscribeUrl&flag=clashmeta');
       expect(action.added.single.$2, 'me@example.com');
+    });
+
+    test('imports the fastest advertised subscription mirror', () async {
+      final action = _RecordingProfilesAction();
+      final adapter = _ScriptedAdapter((options) async {
+        if (options.uri.path == _loginPath) {
+          return _json({
+            'data': {'auth_data': 'tok-1'},
+          });
+        }
+        if (options.method == 'HEAD') {
+          final delay = switch (options.uri.host) {
+            'fast.example.com' => 5,
+            'slow.example.com' => 80,
+            _ => 40,
+          };
+          await Future<void>.delayed(Duration(milliseconds: delay));
+          return ResponseBody.fromString('', 200);
+        }
+        return _json(_subscribe());
+      });
+      final container = containerWith(
+        adapter,
+        profilesAction: () => action,
+        noticeMirrors: ['https://slow.example.com', 'https://fast.example.com'],
+      );
+      final notifier = container.read(panelAccountProvider.notifier);
+      await notifier.login(
+        baseUrl: _base,
+        email: 'me@example.com',
+        password: 'pw',
+      );
+
+      await notifier.importProfile();
+
+      expect(
+        Uri.parse(action.added.single.$1).host,
+        'fast.example.com',
+        reason: 'the probe should choose the lowest-latency mirror',
+      );
+      expect(
+        adapter.requests.where((request) => request.method == 'HEAD'),
+        hasLength(2),
+      );
+    });
+
+    test('falls back to the panel URL when every mirror fails', () async {
+      final action = _RecordingProfilesAction();
+      final adapter = _ScriptedAdapter((options) {
+        if (options.uri.path == _loginPath) {
+          return _json({
+            'data': {'auth_data': 'tok-1'},
+          });
+        }
+        if (options.method == 'HEAD') return _json(const {}, 503);
+        return _json(_subscribe());
+      });
+      final container = containerWith(
+        adapter,
+        profilesAction: () => action,
+        noticeMirrors: ['https://a.example.com', 'https://b.example.com'],
+      );
+      final notifier = container.read(panelAccountProvider.notifier);
+      await notifier.login(
+        baseUrl: _base,
+        email: 'me@example.com',
+        password: 'pw',
+      );
+
+      await notifier.importProfile();
+
+      expect(action.added.single.$1, '$_subscribeUrl&flag=clashmeta');
+    });
+
+    test('falls back to GET when a mirror rejects HEAD', () async {
+      final action = _RecordingProfilesAction();
+      final adapter = _ScriptedAdapter((options) {
+        if (options.uri.path == _loginPath) {
+          return _json({
+            'data': {'auth_data': 'tok-1'},
+          });
+        }
+        if (options.method == 'HEAD') return _json(const {}, 405);
+        return _json(_subscribe());
+      });
+      final container = containerWith(
+        adapter,
+        profilesAction: () => action,
+        noticeMirrors: ['https://headless.example.com'],
+      );
+      final notifier = container.read(panelAccountProvider.notifier);
+      await notifier.login(
+        baseUrl: _base,
+        email: 'me@example.com',
+        password: 'pw',
+      );
+
+      await notifier.importProfile();
+
+      expect(Uri.parse(action.added.single.$1).host, 'headless.example.com');
+    });
+
+    test('treats the same token on another mirror as the same profile', () async {
+      final previous = Profile.normal(
+        label: 'me@example.com',
+        url:
+            'https://slow.example.com/api/v1/client/subscribe?token=abc&flag=clash',
+      ).copyWith(id: 41);
+      final action = _RecordingProfilesAction();
+      final adapter = _ScriptedAdapter(
+        (options) => options.uri.path == _loginPath
+            ? _json({
+                'data': {'auth_data': 'tok-1'},
+              })
+            : _json(_subscribe()),
+      );
+      final container = containerWith(
+        adapter,
+        profiles: [previous],
+        profilesAction: () => action,
+        noticeMirrors: ['https://fast.example.com'],
+      );
+      final notifier = container.read(panelAccountProvider.notifier);
+      await notifier.login(
+        baseUrl: _base,
+        email: 'me@example.com',
+        password: 'pw',
+      );
+
+      await notifier.importProfile();
+
+      expect(action.added, isEmpty);
+      expect(action.updated.single.id, 41);
     });
   });
 }

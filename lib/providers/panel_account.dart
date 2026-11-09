@@ -113,6 +113,14 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
 
   final Dio _dio;
 
+  late final Dio _probeDio = Dio(
+    BaseOptions(
+      connectTimeout: const Duration(seconds: 3),
+      sendTimeout: const Duration(seconds: 2),
+      receiveTimeout: const Duration(seconds: 2),
+    ),
+  )..httpClientAdapter = _dio.httpClientAdapter;
+
   @override
   PanelAccountState build() {
     unawaited(_restore());
@@ -305,6 +313,91 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
     await _persist();
   }
 
+  List<String> _mirrorCandidates(String url) {
+    final base = Uri.tryParse(url);
+    if (base == null) return [url];
+    final candidates = <String>[];
+    final seen = <String>{};
+    for (final mirror in ref.read(clientNoticeProvider).subscribeMirrors) {
+      final origin = Uri.tryParse(mirror);
+      if (origin == null || origin.host.isEmpty) continue;
+      final candidate = base
+          .replace(
+            scheme: origin.scheme,
+            host: origin.host,
+            port: origin.port == 443 ? null : origin.port,
+          )
+          .toString();
+      if (seen.add(candidate)) candidates.add(candidate);
+    }
+    return candidates.isEmpty ? [url] : candidates;
+  }
+
+  bool _isProbeResponse(Response<dynamic> response) {
+    final contentType =
+        response.headers.value(Headers.contentTypeHeader)?.toLowerCase() ?? '';
+    return !contentType.startsWith('text/html');
+  }
+
+  Future<Duration?> _measure(String url) async {
+    final stopwatch = Stopwatch()..start();
+    try {
+      final response = await _probeDio.head<dynamic>(
+        url,
+        options: Options(
+          followRedirects: true,
+          validateStatus: (status) =>
+              status != null && status >= 200 && status < 400,
+        ),
+      );
+      if (!_isProbeResponse(response)) return null;
+      return stopwatch.elapsed;
+    } on DioException catch (error) {
+      final status = error.response?.statusCode;
+      if (status != 405 && status != 501) return null;
+    }
+    // A proxy or origin may reject HEAD; fall back to a normal subscription
+    // request so those mirrors can still be compared.
+    try {
+      final response = await _probeDio.get<dynamic>(
+        url,
+        options: Options(
+          followRedirects: true,
+          responseType: ResponseType.bytes,
+          validateStatus: (status) =>
+              status != null && status >= 200 && status < 400,
+        ),
+      );
+      if (!_isProbeResponse(response)) return null;
+      return stopwatch.elapsed;
+    } on DioException {
+      return null;
+    }
+  }
+
+  Future<String> _fastestSubscribeUrl(String url) async {
+    final candidates = _mirrorCandidates(url);
+    if (candidates.length == 1) {
+      if (candidates.single == url) return url;
+      final measured = await _measure(candidates.single);
+      return measured == null ? url : candidates.single;
+    }
+    final elapsed = await Future.wait([
+      for (final candidate in candidates) _measure(candidate),
+    ]);
+    var best = url;
+    Duration? bestElapsed;
+    for (var index = 0; index < candidates.length; index++) {
+      final measured = elapsed[index];
+      if (measured == null) continue;
+      if (bestElapsed == null || measured < bestElapsed) {
+        best = candidates[index];
+        bestElapsed = measured;
+      }
+    }
+    return best;
+  }
+
   /// Importing twice must not leave two profiles behind: the panel hands out
   /// the same subscription every time, so an import updates the profile an
   /// earlier import created, and removes copies left by a build that did not
@@ -314,7 +407,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
     if (subscribeUrl.isEmpty) {
       throw MessageException(currentAppLocalizations.panelNoSubscriptionUrl);
     }
-    final url = _withClashFlag(subscribeUrl);
+    final url = await _fastestSubscribeUrl(_withClashFlag(subscribeUrl));
     final actions = ref.read(profilesActionProvider.notifier);
     final matches = [
       for (final profile in ref.read(profilesProvider))
@@ -365,8 +458,8 @@ String _withClashFlag(String url) {
 }
 
 /// The panel reads `flag` to choose the template, so the same subscription gets
-/// stored under different links across builds. Two links are that same
-/// subscription when they point at the same place with the same token.
+/// stored under different links across builds. Mirrors also change the host
+/// while keeping the token path, so the host is deliberately not part of the key.
 bool _isSameSubscription(String first, String second) {
   final left = Uri.tryParse(first);
   final right = Uri.tryParse(second);
@@ -377,7 +470,7 @@ bool _isSameSubscription(String first, String second) {
 String _subscriptionKey(Uri uri) {
   final query = Map<String, String>.from(uri.queryParameters)..remove('flag');
   final keys = query.keys.toList()..sort();
-  return '${uri.scheme}://${uri.host}${uri.path}'
+  return '${uri.path}'
       '?${[for (final key in keys) '$key=${query[key]}'].join('&')}';
 }
 

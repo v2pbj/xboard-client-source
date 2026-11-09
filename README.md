@@ -11,6 +11,7 @@
 
 | 版本 | 标签 | 应用源码 commit | 内核源码 commit | 构建依赖 |
 | --- | --- | --- | --- | --- |
+| 0.9.2（T15：客户端更新订阅时自动选择最快镜像） | `v0.9.2-t15` | `f4028e1551865371a9aa898c7cf0c92b4da30498` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T14：默认新安装使用直连入口） | `v0.9.2-t14` | `624abbcb4b441217187385e1615ebf461ede54b4` | `c5062921054902b25215a6a933e72ccd714c9bfa` | Flutter 3.47.6 / Dart 3.13.5 / Go 1.27.1 / NDK r28c / Rust stable / JDK 17 |
 | 0.9.2（T13：构建脚本注入正式版本号） | `v0.9.2-t13` | `0d4d558a0d77f3c1890f3f8e4e9ae32b874b06d2` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
 | 0.9.2（T12：无障碍与图标命名修正） | `v0.9.2-t12` | `b89062a2f29cf49f2e679ee9f28a689f629875a7` | `c5062921054902b25215a6a933e72ccd714c9bfa` | 同上 |
@@ -33,6 +34,8 @@
 
 | 版本 | 文件 | 大小 | SHA-256 |
 | --- | --- | --- | --- |
+| T15 | `bearbooster-0.9.2-t15-source.zip` | 23.3 MB | `C991044694C30621555F5D52FDC9ABDE184F2E01DE60F06A086082DF2B8DB00C` |
+| T15 | `bearbooster-0.9.2-t15-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T14 | `bearbooster-0.9.2-t14-source.zip` | 22.2 MB | `3911A53AC2B1C8789DCDD838F4E6869872B71D32B05AB55CBCBB6581396987AF` |
 | T14 | `bearbooster-0.9.2-t14-core-source.zip` | 1.7 MB | `928D50D0223781EB607BED01150A75FB99271EE0996A94325D6088F0448145D1` |
 | T13 | `bearbooster-0.9.2-t13-source.zip` | 22.2 MB | `6B8DF02F975CAC766AC120F6D4D6A15DB264BBD35051B84D0DDC7FD3FFC80EBB` |
@@ -65,9 +68,12 @@
 每个版本的 `-source.zip` 是应用本体（Flutter/Dart + Android/Windows 工程，含全部构建脚本与 CI 定义），
 `-core-source.zip` 是内核子模块在该 commit 上的源码。两者合起来即为对应源码（Corresponding Source）。
 
-**核验说明（2026-11-07）**：已对公开 Release 的 T7–T14 附件执行 ZIP 可读性、文件清单与逐文件字节核对。
+**核验说明（2026-11-07，T15 于 2026-11-09 补充）**：已对公开 Release 的 T7–T14 附件执行 ZIP 可读性、文件清单与逐文件字节核对。
 T7–T12、T14 的应用源码与上表标签的 Git 树一致，T7–T14 的内核源码与 `c5062921054902b25215a6a933e72ccd714c9bfa` 一致。
 T13 的公开应用 ZIP 仅 `test/setup_test.dart` 与其标签树存在测试调用差异，未改写发布附件；其余文件一致。
+
+T15 的 `-source.zip` 已确认包含 `f4028e1551865371a9aa898c7cf0c92b4da30498` 的应用源码；该 ZIP 由 Windows 侧打包，文本文件为 CRLF 换行，与 Git 树的 LF 版本在规范化换行后内容一致，因此 ZIP 文件本身与 Git 树不是逐字节相同。`-core-source.zip` 仍对应 `c5062921054902b25215a6a933e72ccd714c9bfa`。
+
 源码 SHA-256 已同步至 `SHA256SUMS.txt`，用于核对下载文件。
 
 安装包自身的 SHA-256 见同版本 Release 里的 `SHA256SUMS.txt`。

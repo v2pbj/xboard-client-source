@@ -171,35 +171,34 @@ void main() {
   });
 
   group('login', () {
-    test(
-      'uses advertised panel fallback only after the requested endpoint fails',
-      () async {
-        const fallback = 'https://fallback.example.com';
-        final adapter = _ScriptedAdapter((options) {
-          if (options.uri.host == 'panel.example.com' &&
-              options.uri.path == _loginPath) {
-            throw DioException.connectionError(
-              requestOptions: options,
-              reason: 'fixture unreachable',
-            );
-          }
-          if (options.uri.host == 'fallback.example.com' &&
-              options.uri.path == _loginPath) {
-            return _json({
-              'data': {'auth_data': 'tok-fallback'},
-            });
-          }
-          return _json(_subscribe());
-        });
-        final container = containerWith(adapter, noticeUrls: [fallback]);
-        await container
+    test('never sends credentials to an advertised fallback panel', () async {
+      const fallback = 'https://fallback.example.com';
+      final adapter = _ScriptedAdapter((options) {
+        if (options.uri.host == 'panel.example.com' &&
+            options.uri.path == _loginPath) {
+          throw DioException.connectionError(
+            requestOptions: options,
+            reason: 'fixture unreachable',
+          );
+        }
+        if (options.uri.host == 'fallback.example.com' &&
+            options.uri.path == _loginPath) {
+          return _json({
+            'data': {'auth_data': 'tok-fallback'},
+          });
+        }
+        return _json(_subscribe());
+      });
+      final container = containerWith(adapter, noticeUrls: [fallback]);
+      await expectLater(
+        container
             .read(panelAccountProvider.notifier)
-            .login(baseUrl: _base, email: 'me@example.com', password: 'pw');
-        expect(container.read(panelAccountProvider).baseUrl, fallback);
-        expect(adapter.requests[0].uri.host, 'panel.example.com');
-        expect(adapter.requests[1].uri.host, 'fallback.example.com');
-      },
-    );
+            .login(baseUrl: _base, email: 'me@example.com', password: 'pw'),
+        throwsA(isA<MessageException>()),
+      );
+      expect(adapter.requests, hasLength(1));
+      expect(adapter.requests.single.uri.host, 'panel.example.com');
+    });
 
     test(
       'does not retry authentication rejection against another panel',
@@ -357,7 +356,7 @@ void main() {
       );
     });
 
-    test('adopts an HTTPS panel address', () async {
+    test('does not silently adopt an HTTPS panel address', () async {
       SharedPreferences.setMockInitialValues({});
       final adapter = _ScriptedAdapter(
         (_) => _json({'panel_base_url': 'https://new-panel.example.com'}),
@@ -367,10 +366,7 @@ void main() {
 
       await container.read(panelAccountProvider.notifier).syncBaseUrl();
 
-      expect(
-        container.read(panelAccountProvider).baseUrl,
-        'https://new-panel.example.com',
-      );
+      expect(container.read(panelAccountProvider).baseUrl, isEmpty);
     });
   });
 

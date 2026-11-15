@@ -25,7 +25,6 @@ const _renewPath = '/#/plan';
 // The front page outlives a panel rename, so it publishes the panel address.
 const _endpointSeeds = ['https://f.xycould.top', 'https://app.xycould.top'];
 const _endpointPath = '/client-endpoint.json';
-const _discoveredBaseUrlKey = 'panel_account_discovered_base_url';
 
 @immutable
 class PanelAccountState {
@@ -165,10 +164,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
       throw MessageException(currentAppLocalizations.panelBaseUrlRequired);
     }
     state = state.copyWith(isLoading: true);
-    final candidates = <String>[
-      base,
-      ...ref.read(clientNoticeProvider).panelUrls,
-    ];
+    final candidates = <String>[base];
     final endpoints = <String>[];
     for (final candidate in candidates) {
       final normalized = _normalizeBaseUrl(candidate);
@@ -250,16 +246,11 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
   }
 
   /// The front page carries both the panel address and the brand, so a panel
-  /// that moves or is renamed is followed without a new build. Manual addresses
-  /// stay put, but the build-time entrance is canonical and may be moved by the
-  /// front page it advertises.
+  /// A front page may announce a new address, but the client never moves the
+  /// account API silently: the user must enter/confirm a host explicitly.
   Future<void> syncBaseUrl() async {
     final preferences = await SharedPreferences.getInstance();
-    final discovered = preferences.getString(_discoveredBaseUrlKey) ?? '';
     final current = _normalizeBaseUrl(state.baseUrl);
-    final canonical = _normalizeBaseUrl(_panelBaseUrlDefine);
-    final mayReplaceUrl =
-        current.isEmpty || current == canonical || current == discovered;
     final dynamic body;
     try {
       Response<dynamic>? response;
@@ -298,7 +289,6 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
       await preferences.setString(_brandZhKey, brandZh);
       await preferences.setString(_brandEnKey, brandEn);
     }
-    if (!mayReplaceUrl) return;
     final candidate = _normalizeBaseUrl('${data['panel_base_url'] ?? ''}');
     final uri = Uri.tryParse(candidate);
     final isUsable =
@@ -306,11 +296,7 @@ class PanelAccountNotifier extends Notifier<PanelAccountState> {
         uri.scheme == 'https' &&
         uri.host.isNotEmpty &&
         uri.userInfo.isEmpty;
-    if (!isUsable) return;
-    await preferences.setString(_discoveredBaseUrlKey, candidate);
-    if (!ref.mounted || candidate == current) return;
-    state = state.copyWith(baseUrl: candidate);
-    await _persist();
+    if (!isUsable || candidate != current) return;
   }
 
   List<String> _mirrorCandidates(String url) {

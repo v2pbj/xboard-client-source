@@ -51,7 +51,7 @@ String alignDownloadHost(String url, String answered) {
 
 /// The `-tN` suffix advances a fixed semantic version; an absent tag is T0.
 bool _isNewer(String latest, String current) {
-  final valid = RegExp(r'^(\d+)\.(\d+)\.(\d+)(?:-t(\d+))?$');
+  final valid = RegExp(r'^v?(\d+)\.(\d+)\.(\d+)(?:-t(\d+))?$');
   final left = valid.firstMatch(latest);
   final right = valid.firstMatch(current);
   if (left == null || right == null) return false;

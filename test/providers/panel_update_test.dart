@@ -67,6 +67,24 @@ void main() {
     });
   });
 
+  group('PanelUpdate.hasUpdate', () {
+    test('accepts a leading v in the announced build', () {
+      const update = PanelUpdate(
+        latestBuild: 'v0.9.2-t16',
+        downloadUrl: 'https://f.xycould.top/download',
+      );
+      expect(update.hasUpdate, isTrue);
+    });
+
+    test('rejects a malformed announced build', () {
+      const update = PanelUpdate(
+        latestBuild: 'vv0.9.2-t16',
+        downloadUrl: 'https://f.xycould.top/download',
+      );
+      expect(update.hasUpdate, isFalse);
+    });
+  });
+
   group('PanelUpdateNotifier', () {
     test('tries the direct endpoint before its fallback', () async {
       var calls = 0;

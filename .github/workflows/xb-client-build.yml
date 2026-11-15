@@ -79,6 +79,13 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Normalize build tag
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          echo "XB_BUILD=${RELEASE_TAG#v}" >> "$GITHUB_ENV"
+
       - name: Free disk space
         run: |
           sudo rm -rf \
@@ -265,6 +272,13 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: recursive
+
+      - name: Normalize build tag
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          echo "XB_BUILD=${RELEASE_TAG#v}" >> "$GITHUB_ENV"
 
       - uses: actions/setup-go@v6
         with:

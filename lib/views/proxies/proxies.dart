@@ -3,6 +3,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
+import 'package:fl_clash/views/proxies/latency_strip.dart';
 import 'package:fl_clash/views/proxies/list.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
@@ -156,6 +157,10 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
     final isLoading = ref.watch(loadingProvider(LoadingTag.proxies));
     final picker = widget.picker;
     final primaryAction = _buildPrimaryAction();
+    final content = switch (style.type) {
+      ProxiesType.tab => _tabView,
+      ProxiesType.list => const ProxiesListView(),
+    };
     return CommonScaffold(
       isLoading: isLoading,
       resizeToAvoidBottomInset: false,
@@ -174,10 +179,26 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
       menuItems: picker ? const [] : _buildMenuItems(context, style),
       title: context.appLocalizations.proxies,
       searchState: AppBarSearchState(onSearch: _onSearch),
-      body: switch (style.type) {
-        ProxiesType.tab => _tabView,
-        ProxiesType.list => const ProxiesListView(),
-      },
+      body: picker
+          ? content
+          : Column(
+              children: [
+                LatencyStrip(
+                  onTest: () {
+                    final groupName = ref
+                        .read(proxiesTabControllerStateProvider)
+                        .currentGroupName;
+                    if (groupName == null || groupName.isEmpty) {
+                      return;
+                    }
+                    ref
+                        .read(proxiesActionProvider.notifier)
+                        .delayTestPageGroup(groupName);
+                  },
+                ),
+                Expanded(child: content),
+              ],
+            ),
     );
   }
 }

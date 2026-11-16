@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/ui/color.dart';
 import 'package:fl_clash/ui/context.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/shape.dart';
@@ -106,42 +107,49 @@ class _DelayChip extends ConsumerWidget {
       delayProvider(proxyName: proxy.name, testUrl: testUrl),
     );
     final colorScheme = context.colorScheme;
-    final (label, color) = switch (delay) {
-      null => ('--', colorScheme.onSurfaceVariant),
-      < 0 => (context.appLocalizations.timeout, colorScheme.error),
-      < 150 => ('${delay}ms', const Color(0xFF188038)),
-      < 300 => ('${delay}ms', const Color(0xFFB06000)),
-      _ => ('${delay}ms', colorScheme.error),
-    };
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-      decoration: ShapeDecoration(
-        color: colorScheme.surface,
-        shape: AppShape.sm.copyWith(
-          side: BorderSide(color: colorScheme.outlineVariant),
+    final (label, color) = delay == null
+        ? ('--', colorScheme.onSurfaceVariant)
+        : (
+            delay > 0
+                ? '$delay ms'
+                : delayFailureText(delay, context.appLocalizations),
+            colorScheme.delayColor(delay),
+          );
+    return Semantics(
+      label: '${proxy.name}, $label',
+      child: Container(
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+        decoration: ShapeDecoration(
+          color: colorScheme.surface,
+          shape: AppShape.sm.copyWith(
+            side: BorderSide(color: colorScheme.outlineVariant),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 110),
-            child: Text(
-              proxy.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.footnote.of(context),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 110),
+              child: Tooltip(
+                message: proxy.name,
+                child: Text(
+                  proxy.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyle.footnote.of(context),
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: AppTextStyle.footnote
-                .of(context, emphasized: true)
-                .copyWith(color: color),
-          ),
-        ],
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: AppTextStyle.footnote
+                  .of(context, emphasized: true)
+                  .copyWith(color: color),
+            ),
+          ],
+        ),
       ),
     );
   }

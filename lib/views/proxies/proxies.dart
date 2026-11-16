@@ -193,7 +193,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
                     }
                     ref
                         .read(proxiesActionProvider.notifier)
-                        .delayTestPageGroup(groupName);
+                        .delayTestPageGroup(groupName, matchSearch: false);
                   },
                 ),
                 Expanded(child: content),

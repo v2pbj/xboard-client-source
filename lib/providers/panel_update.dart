@@ -56,11 +56,15 @@ bool _isNewer(String latest, String current) {
   final right = valid.firstMatch(current);
   if (left == null || right == null) return false;
   for (var i = 1; i <= 3; i++) {
-    final a = int.parse(left.group(i)!);
-    final b = int.parse(right.group(i)!);
+    final a = int.tryParse(left.group(i)!);
+    final b = int.tryParse(right.group(i)!);
+    if (a == null || b == null) return false;
     if (a != b) return a > b;
   }
-  return int.parse(left.group(4) ?? '0') > int.parse(right.group(4) ?? '0');
+  final leftBuild = int.tryParse(left.group(4) ?? '0');
+  final rightBuild = int.tryParse(right.group(4) ?? '0');
+  if (leftBuild == null || rightBuild == null) return false;
+  return leftBuild > rightBuild;
 }
 
 String _safeHttpsUrl(String url) {

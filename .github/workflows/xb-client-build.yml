@@ -46,6 +46,7 @@ on:
     branches:
       - main
       - xb/rebrand-t1
+      - flclash-rebrand-t1
 
 concurrency:
   group: client-build-${{ github.ref }}
@@ -84,7 +85,11 @@ jobs:
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
-          echo "XB_BUILD=${RELEASE_TAG#v}" >> "$GITHUB_ENV"
+          TAG="${RELEASE_TAG#v}"
+          if [ -z "$TAG" ]; then
+            TAG=$(git describe --tags --exact-match 2>/dev/null | sed 's/^v//' || true)
+          fi
+          echo "XB_BUILD=$TAG" >> "$GITHUB_ENV"
 
       - name: Free disk space
         run: |
@@ -278,7 +283,11 @@ jobs:
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
-          echo "XB_BUILD=${RELEASE_TAG#v}" >> "$GITHUB_ENV"
+          TAG="${RELEASE_TAG#v}"
+          if [ -z "$TAG" ]; then
+            TAG=$(git describe --tags --exact-match 2>/dev/null | sed 's/^v//' || true)
+          fi
+          echo "XB_BUILD=$TAG" >> "$GITHUB_ENV"
 
       - uses: actions/setup-go@v6
         with:

@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:cryptography/cryptography.dart';
 import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +15,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// that goes quiet for users on mainland networks.
 const _endpointSeeds = ['https://f.xycould.top', 'https://app.xycould.top'];
 const _endpointPath = '/client-endpoint.json';
+
+/// Ed25519 public key for the update manifest, pinned at build time.
+/// Empty means update prompts are disabled (fail closed).
+const _updatePublicKeyDefault = 'tX2B9ZD1US6Wa1/cNqR2XjRn5pfWUtbnKKJGdVA9oN8=';
 
 @immutable
 class PanelUpdate {
@@ -83,7 +89,7 @@ final panelUpdateProvider = NotifierProvider<PanelUpdateNotifier, PanelUpdate>(
 );
 
 class PanelUpdateNotifier extends Notifier<PanelUpdate> {
-  PanelUpdateNotifier({Dio? dio})
+  PanelUpdateNotifier({Dio? dio, String? updatePublicKey})
     : _dio =
           dio ??
           Dio(
@@ -91,9 +97,11 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
               connectTimeout: const Duration(seconds: 6),
               receiveTimeout: const Duration(seconds: 6),
             ),
-          );
+          ),
+      _updatePublicKey = updatePublicKey ?? _updatePublicKeyDefault;
 
   final Dio _dio;
+  final String _updatePublicKey;
   Future<void>? _refreshing;
 
   @override
@@ -122,22 +130,32 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
         continue;
       }
       if (!ref.mounted) return;
-      _apply(body, seed);
+      await _apply(body, seed);
       return;
     }
   }
 
-  void _apply(dynamic body, String answered) {
+  Future<void> _apply(dynamic body, String answered) async {
     final data = body is Map ? body : const {};
     final latestBuild = '${data['latest_build'] ?? ''}'.trim();
-    final downloadUrl = _safeHttpsUrl(
-      alignDownloadHost(
-        _safeHttpsUrl('${data['download_url'] ?? ''}'.trim()),
-        answered,
-      ),
-    );
+    final rawDownload = _safeHttpsUrl('${data['download_url'] ?? ''}'.trim());
     final namedHome = _safeHttpsUrl('${data['home_url'] ?? ''}'.trim());
     final homeUrl = namedHome.isNotEmpty ? namedHome : '$answered/';
+    final panelBaseUrl = _safeHttpsUrl(
+      '${data['panel_base_url'] ?? ''}'.trim(),
+    );
+    if (!await _verifyManifest(
+      panelBaseUrl: panelBaseUrl,
+      latestBuild: latestBuild,
+      downloadUrl: rawDownload,
+      homeUrl: namedHome,
+      signature: '${data['signature'] ?? ''}'.trim(),
+      alg: '${data['sig_alg'] ?? ''}'.trim(),
+    )) {
+      return;
+    }
+    if (!ref.mounted) return;
+    final downloadUrl = _safeHttpsUrl(alignDownloadHost(rawDownload, answered));
     if (latestBuild == state.latestBuild &&
         downloadUrl == state.downloadUrl &&
         homeUrl == state.homeUrl) {
@@ -148,5 +166,39 @@ class PanelUpdateNotifier extends Notifier<PanelUpdate> {
       downloadUrl: downloadUrl,
       homeUrl: homeUrl,
     );
+  }
+
+  Future<bool> _verifyManifest({
+    required String panelBaseUrl,
+    required String latestBuild,
+    required String downloadUrl,
+    required String homeUrl,
+    required String signature,
+    required String alg,
+  }) async {
+    if (_updatePublicKey.isEmpty ||
+        alg != 'ed25519' ||
+        signature.isEmpty ||
+        panelBaseUrl.isEmpty ||
+        latestBuild.isEmpty ||
+        downloadUrl.isEmpty ||
+        homeUrl.isEmpty) {
+      return false;
+    }
+    try {
+      final message = utf8.encode(
+        '$panelBaseUrl\n$latestBuild\n$downloadUrl\n$homeUrl\n',
+      );
+      final publicKey = SimplePublicKey(
+        base64Decode(_updatePublicKey),
+        type: KeyPairType.ed25519,
+      );
+      return await Ed25519().verify(
+        message,
+        signature: Signature(base64Decode(signature), publicKey: publicKey),
+      );
+    } on FormatException {
+      return false;
+    }
   }
 }

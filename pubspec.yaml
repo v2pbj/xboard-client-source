@@ -76,6 +76,7 @@ dependencies:
   setup:
     path: plugins/setup
   qr: ^4.0.0
+  cryptography: ^2.9.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
